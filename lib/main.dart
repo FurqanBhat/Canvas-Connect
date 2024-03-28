@@ -1,3 +1,4 @@
+import 'package:canvas_connect/screen/help.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: themeData,
-      home: CourseList()
+      home: LoginScreen()
     );
   }
 }
