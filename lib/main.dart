@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:canvas_connect/screen/course_screen.dart';
 import 'package:canvas_connect/screen/help.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeData,
       home: LoginScreen()
     );

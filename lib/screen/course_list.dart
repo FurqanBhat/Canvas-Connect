@@ -1,4 +1,6 @@
+import 'package:canvas_connect/models/LoginModel.dart';
 import 'package:canvas_connect/resource/theme.dart';
+import 'package:canvas_connect/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -30,6 +32,19 @@ class CourseList extends StatelessWidget {
           icon: const Icon(Icons.menu),
           onPressed: () {},
         ),
+        actions: [
+          ElevatedButton(
+            child: Icon(
+              Icons.logout,
+            ),
+            onPressed: (){
+              LoginModel.logOut();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginScreen()));
+
+            },
+          )
+        ],
+
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),

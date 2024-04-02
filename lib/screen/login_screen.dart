@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _domainController;
   late TextEditingController _tokenController;
+  bool _loading=false;
   GlobalKey<FormState> _formKey = GlobalKey();
   @override
   void initState() {
@@ -48,7 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       ),
     );
-    bool _loading=false;
     return _loading ? Loading() : Scaffold(
       body: Form(
         key: _formKey,
@@ -123,24 +123,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 onTap: () async {
+                  LoginModel.setData(_tokenController.text, _domainController.text);
+                  print("after hello");
                   setState(() {
                     _loading=true;
                   });
-                  LoginModel.setData(_tokenController.text.toString(), _domainController.text.toString());
-                  await CoursesModel.fetchCourses();
-                  if(CoursesModel.requestSuccess){
-                    LoginModel.setLoginSuccessful();
-                    await LoginModel.loginstart();
-                    setState(() {
-                      _loading=false;
-                    });
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseList()));
-                  }else{
+                  try{
+                    await CoursesModel.fetchCourses();
+                    if(CoursesModel.requestSuccess){
+                      LoginModel.setLoginSuccessful();
+                      await LoginModel.loginstart();
+                      setState(() {
+                        _loading=false;
+                      });
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseList()));
+                    }else{
+                      setState(() {
+                        _loading=false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  }catch(e){
                     setState(() {
                       _loading=false;
                     });
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
+
 
 
                 },
