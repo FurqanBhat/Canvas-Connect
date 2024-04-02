@@ -1,4 +1,8 @@
+import 'package:canvas_connect/models/CoursesModel.dart';
+import 'package:canvas_connect/models/LoginModel.dart';
+import 'package:canvas_connect/screen/course_list.dart';
 import 'package:canvas_connect/screen/help.dart';
+import 'package:canvas_connect/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,22 +15,41 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _domainController;
   late TextEditingController _tokenController;
-  GlobalKey<FormState> _formKey= GlobalKey();
+  GlobalKey<FormState> _formKey = GlobalKey();
   @override
   void initState() {
     super.initState();
-    _domainController=TextEditingController();
-    _tokenController=TextEditingController();
+    _domainController = TextEditingController();
+    _tokenController = TextEditingController();
   }
+
   @override
   void dispose() {
     _domainController.dispose();
     _tokenController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final snackBar=SnackBar(
+      content: Text("Invalid Token.", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white),),
+      backgroundColor: Colors.blueGrey[900],
+      padding: EdgeInsets.all(10),
+      showCloseIcon: true,
+      closeIconColor: Colors.white,
+      action: SnackBarAction(
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        label: "Help",
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Help()));
+        },
+
+      ),
+    );
+    bool _loading=false;
+    return _loading ? Loading() : Scaffold(
       body: Form(
         key: _formKey,
         child: Container(
@@ -38,7 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.login,
                 size: 50,
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 "Canvas Login",
                 style: TextStyle(
@@ -46,13 +71,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               TextFormField(
                 controller: _domainController,
                 decoration: InputDecoration(
                   filled: true,
                   labelText: 'Domain name',
-                  hintText: 'eg. www.agu.edu.tr',
+                  hintText: 'eg. canvas.agu.edu.tr',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -61,12 +88,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               TextFormField(
                 controller: _tokenController,
                 decoration: InputDecoration(
                   filled: true,
-                  hintText: "e.g OWdLx3EdqeGg1YDUWtsUmQE0rYh6i8jdQwXNHKAMdFN1eGBOek6RWaP4uaaIsKp4",
+                  hintText:
+                      "e.g OWdLx3EdqeGg1YDUWtsUmQE0rYh6i8jdQwXNHKAMdFN1eGBOek6RWaP4uaaIsKp4",
                   labelText: 'Token',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -76,20 +106,64 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               InkWell(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black
-                  ),
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.black),
                   alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width*0.4,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                  child: Text('Help', style: TextStyle(color: Colors.white, fontSize: 22),),
+                  child: Text(
+                    'Login',
+                    style: TextStyle(color: Colors.white, fontSize: 26),
+                  ),
                 ),
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Help()));
+                onTap: () async {
+                  setState(() {
+                    _loading=true;
+                  });
+                  LoginModel.setData(_tokenController.text.toString(), _domainController.text.toString());
+                  await CoursesModel.fetchCourses();
+                  if(CoursesModel.requestSuccess){
+                    LoginModel.setLoginSuccessful();
+                    await LoginModel.loginstart();
+                    setState(() {
+                      _loading=false;
+                    });
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseList()));
+                  }else{
+                    setState(() {
+                      _loading=false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+
+
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.black),
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  child: Text(
+                    'Help',
+                    style: TextStyle(color: Colors.white, fontSize: 22)
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Help()));
                 },
               ),
             ],
