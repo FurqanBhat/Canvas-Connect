@@ -2,53 +2,52 @@ import 'package:canvas_connect/models/LoginModel.dart';
 import 'package:canvas_connect/resource/theme.dart';
 import 'package:canvas_connect/screen/course_screen.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
+import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class Course {
-  String id;
-  String name;
-  Color color;
-
-  Course(this.id, this.name, this.color);
-}
-
-/* Sample course list */
 class CourseList extends StatelessWidget {
-  final List<Course> courses = [
-    Course("ENG101", "English I", Colors.yellow),
-    Course("MATH152", "Calculus II", Colors.red),
-    Course("COMP112", "Object-Oriented Programming", Colors.orange),
-    Course("GLB207", "Responsible Consumption and Production", Colors.teal),
-    Course("COMP202", "Software Engineering", Colors.blue),
-    Course("MATH203", "Linear Algebra", Colors.purple)
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Courses"),
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-          actions: [
-            ElevatedButton(
-              child: Icon(
-                Icons.logout,
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor
+                ),
+                child: const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "Canvas-Connect",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                )
               ),
-              onPressed: () {
-                LoginModel.logOut();
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              },
-            )
-          ],
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text("Log out"),
+                onTap: () {
+                  LoginModel.logOut();
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
+                },
+              )
+            ],
+          )
         ),
         body: ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: courses.length,
+          itemCount: CoursesModel.courses.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(4.0),
@@ -60,13 +59,13 @@ class CourseList extends StatelessWidget {
                   color: Theme.of(context).cardColor,
                   child: InkWell(
                     child: SizedBox(
-                        height: 64.0,
+                        height: 72.0,
                         child: Row(
                           children: [
                             SizedBox(
                               width: 24.0,
                               child: Container(
-                                color: courses[index].color,
+                                color: CoursesModel.courses[index].color,
                               ),
                             ),
                             const SizedBox(width: 8.0),
@@ -76,12 +75,12 @@ class CourseList extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    courses[index].id,
+                                    CoursesModel.courses[index].code,
                                     style: const TextStyle(
                                         fontSize: 20.0,
                                         fontWeight: FontWeight.w200),
                                   ),
-                                  Text(courses[index].name,
+                                  Text(CoursesModel.courses[index].name,
                                       style: const TextStyle(
                                         fontSize: 10.0,
                                       )),
@@ -90,16 +89,15 @@ class CourseList extends StatelessWidget {
                             ),
                             const SizedBox(width: 8.0),
                             Row(children: [
-                              /* Sample quick access buttons */
-                              IconButton(
-                                  icon: const Icon(Icons.file_present),
-                                  onPressed: () {}),
+                              /* Quick access buttons */
                               IconButton(
                                   icon: const Icon(Icons.announcement),
-                                  onPressed: () {}),
+                                  onPressed: () {}
+                              ),
                               IconButton(
                                   icon: const Icon(Icons.check_box),
-                                  onPressed: () {}),
+                                  onPressed: () {}
+                              ),
                             ]),
                             const SizedBox(width: 8.0)
                           ],
