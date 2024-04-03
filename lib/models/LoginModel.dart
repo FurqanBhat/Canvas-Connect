@@ -7,7 +7,7 @@ class LoginModel{
   static String get domain => _domain;
   static bool _loginSuccessful=false;
   static bool get loginSuccessful=> _loginSuccessful;
-  static SharedPreferences? preferences;
+
   LoginModel(){
     _loadLoginData();
   }
@@ -16,22 +16,20 @@ class LoginModel{
     await _loadLoginData();
   }
 
-  static _initializePref() async {
-    if(preferences==null){
-      preferences= await SharedPreferences.getInstance();
-    }
-  }
   static _loadLoginData() async{
-    await _initializePref();
-    _token=preferences?.getString("token") ?? "";
-    _domain=preferences?.getString("domain")?? "";
-    _loginSuccessful=preferences?.getBool("loginSuccessful") ?? false;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    _token=preferences.getString("token") ?? "";
+    _domain=preferences.getString("domain") ?? "";
+    _loginSuccessful=preferences.getBool("loginSuccessful") ?? false;
   }
 
-  static _saveDataInPref(){
-    preferences?.setString("token", _token);
-    preferences?.setString("domain", _domain);
-    preferences?.setBool("loginSuccessful", _loginSuccessful);
+  static _saveDataInPref() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    preferences.setString("token", _token);
+    preferences.setString("domain", _domain);
+    preferences.setBool("loginSuccessful", _loginSuccessful);
   }
   static void setData(String token, String domain){
     _token=token;
@@ -43,6 +41,7 @@ class LoginModel{
     _saveDataInPref();
   }
   static void logOut(){
+    print("logout");
     _token="";
     _domain="";
     _loginSuccessful=false;
