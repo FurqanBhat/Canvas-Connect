@@ -7,26 +7,6 @@ class CourseScreen extends StatefulWidget {
   _CourseScreenState createState() => _CourseScreenState();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class _CourseScreenState extends State<CourseScreen> {
   int _selectedIndex = 0;
   final List<String> _announcements = [
@@ -50,7 +30,9 @@ class _CourseScreenState extends State<CourseScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -215,7 +197,8 @@ class _CourseScreenState extends State<CourseScreen> {
     );
   }
 
-  Widget _buildAssignmentCard({required String title, required String dueDate}) {
+  Widget _buildAssignmentCard(
+      {required String title, required String dueDate}) {
     return Card(
       elevation: 0.0, // Set elevation to 0 to remove hovering effect
       shape: RoundedRectangleBorder(

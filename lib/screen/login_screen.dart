@@ -6,7 +6,7 @@ import 'package:canvas_connect/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -15,8 +15,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _domainController;
   late TextEditingController _tokenController;
-  bool _loading=false;
+  bool _loading = false;
   GlobalKey<FormState> _formKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -31,153 +32,153 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _handleLogin() async {
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      LoginModel.setData(_tokenController.text, _domainController.text);
+      await CoursesModel.fetchCourses();
+
+      if (CoursesModel.requestSuccess) {
+        LoginModel.setLoginSuccessful();
+        await LoginModel.loginstart();
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => CourseList()));
+      } else {
+        _showSnackBar("Invalid Token.");
+      }
+    } catch (e) {
+      _showSnackBar("An error occurred.");
+    } finally {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  void _showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(fontSize: 16, color: Colors.white),
+      ),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final snackBar=SnackBar(
-      content: Text("Invalid Token.", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white),),
-      backgroundColor: Colors.blueGrey[900],
-      padding: EdgeInsets.all(10),
-      showCloseIcon: true,
-      closeIconColor: Colors.white,
-      action: SnackBarAction(
-        backgroundColor: Colors.blue,
-        textColor: Colors.white,
-        label: "Help",
-        onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Help()));
-        },
-
-      ),
-    );
-    return _loading ? Loading() : Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.login,
-                size: 50,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Canvas Login",
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: _domainController,
-                decoration: InputDecoration(
-                  filled: true,
-                  labelText: 'Domain name',
-                  hintText: 'eg. canvas.agu.edu.tr',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+    return Scaffold(
+      backgroundColor: Color(0xFFF1F1F1),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Canvas-Connect",
+                    style: TextStyle(
+                      fontSize: 47,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF333333),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                  SizedBox(height: 20),
+                  Icon(
+                    Icons.login,
+                    size: 70,
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: _tokenController,
-                decoration: InputDecoration(
-                  filled: true,
-                  hintText:
-                      "e.g OWdLx3EdqeGg1YDUWtsUmQE0rYh6i8jdQwXNHKAMdFN1eGBOek6RWaP4uaaIsKp4",
-                  labelText: 'Token',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                  SizedBox(height: 40),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _domainController,
+                          style: TextStyle(color: Color(0xFF333333)),
+                          decoration: InputDecoration(
+                            labelText: 'Domain Name',
+                            labelStyle: TextStyle(color: Color(0xFF333333)),
+                            hintText: 'e.g. canvas.agu.edu.tr',
+                            hintStyle: TextStyle(color: Color(0xFF666666)),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
+                            ),
+                            prefixIcon:
+                                Icon(Icons.domain, color: Color(0xFF333333)),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _tokenController,
+                          style: TextStyle(color: Color(0xFF333333)),
+                          decoration: InputDecoration(
+                            labelText: 'Token',
+                            labelStyle: TextStyle(color: Color(0xFF333333)),
+                            hintText: 'Enter your token',
+                            hintStyle: TextStyle(color: Color(0xFF666666)),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
+                            ),
+                            prefixIcon:
+                                Icon(Icons.vpn_key, color: Color(0xFF333333)),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _handleLogin,
+                          child: Text('Connect'),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFF008CFF)),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                    EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 30)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Help()));
+                          },
+                          child: Text(
+                            'Need Help?',
+                            style: TextStyle(color: Color(0xFF008CFF)),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
+                ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black),
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white, fontSize: 26),
-                  ),
-                ),
-                onTap: () async {
-                  LoginModel.setData(_tokenController.text, _domainController.text);
-                  print("after hello");
-                  setState(() {
-                    _loading=true;
-                  });
-                  try{
-                    await CoursesModel.fetchCourses();
-                    if(CoursesModel.requestSuccess){
-                      LoginModel.setLoginSuccessful();
-                      await LoginModel.loginstart();
-                      setState(() {
-                        _loading=false;
-                      });
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseList()));
-                    }else{
-                      setState(() {
-                        _loading=false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  }catch(e){
-                    setState(() {
-                      _loading=false;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-
-
-
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black),
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                  child: Text(
-                    'Help',
-                    style: TextStyle(color: Colors.white, fontSize: 22)
-                  ),
-                ),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Help()));
-                },
-              ),
-            ],
+            ),
           ),
-        ),
+          if (_loading) Loading(),
+        ],
       ),
     );
   }
