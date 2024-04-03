@@ -14,12 +14,12 @@ class CourseList extends StatelessWidget {
           title: const Text("Courses"),
         ),
         drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
+            child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor
+                  color: Colors.blueGrey.shade800,
                 ),
                 child: const Align(
                   alignment: Alignment.bottomLeft,
@@ -28,23 +28,21 @@ class CourseList extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24.0,
-                      fontWeight: FontWeight.w300,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                )
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text("Log out"),
-                onTap: () {
-                  LoginModel.logOut();
-                  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const LoginScreen()));
-                },
-              )
-            ],
-          )
-        ),
+                )),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Log out"),
+              onTap: () {
+                LoginModel.logOut();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const LoginScreen()));
+              },
+            )
+          ],
+        )),
         body: ListView.builder(
           padding: const EdgeInsets.all(8.0),
           itemCount: CoursesModel.courses.length,
@@ -92,12 +90,10 @@ class CourseList extends StatelessWidget {
                               /* Quick access buttons */
                               IconButton(
                                   icon: const Icon(Icons.announcement),
-                                  onPressed: () {}
-                              ),
+                                  onPressed: () {}),
                               IconButton(
                                   icon: const Icon(Icons.check_box),
-                                  onPressed: () {}
-                              ),
+                                  onPressed: () {}),
                             ]),
                             const SizedBox(width: 8.0)
                           ],
