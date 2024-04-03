@@ -1,28 +1,30 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:canvas_connect/models/CoursesModel.dart';
+import 'package:canvas_connect/shared/loading.dart';
 
 class CourseScreen extends StatefulWidget {
-  const CourseScreen({Key? key}) : super(key: key);
+  final int index;
+
+  const CourseScreen(this.index, {super.key});
 
   @override
-  _CourseScreenState createState() => _CourseScreenState();
+  CourseScreenState createState() => CourseScreenState();
 }
 
-class _CourseScreenState extends State<CourseScreen> {
+class CourseScreenState extends State<CourseScreen> {
+  late Course course = CoursesModel.courses[widget.index];
   int _selectedIndex = 0;
-  final List<String> _announcements = [
-    "Announcement 1",
-    "Announcement 2",
-    "Announcement 3",
-  ];
 
   @override
   Widget build(BuildContext context) {
+    Course course = CoursesModel.courses[widget.index];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
         title: Text(
-          "MATH154",
-          style: TextStyle(
+          course.code,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -95,7 +97,7 @@ class _CourseScreenState extends State<CourseScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.blueGrey,
@@ -110,7 +112,7 @@ class _CourseScreenState extends State<CourseScreen> {
       color: Colors.blueGrey,
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -122,7 +124,7 @@ class _CourseScreenState extends State<CourseScreen> {
   Widget _buildViewAllButton({required VoidCallback onPressed}) {
     return TextButton(
       onPressed: onPressed,
-      child: Text(
+      child: const Text(
         "View all",
         style: TextStyle(
           color: Colors.blueGrey,
@@ -133,7 +135,7 @@ class _CourseScreenState extends State<CourseScreen> {
 
   Widget _buildAnnouncementsList() {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
@@ -141,58 +143,83 @@ class _CourseScreenState extends State<CourseScreen> {
         ),
       ),
       height: 200,
-      child: PageView.builder(
-        itemCount: _announcements.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: Text(
-                  _announcements[index],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.blueGrey,
+      child: FutureBuilder(
+        future: course.getAnnouncements(),
+        builder:(context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Loading();
+          }
+
+          print(snapshot.data!);
+
+          return SizedBox(
+            height: 300.0,
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Announcement announcement = snapshot.data![index];
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ),
-              ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Text(
+                        announcement.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           );
-        },
+        }
       ),
     );
   }
 
   Widget _buildAssignmentsCalendar() {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
           color: Colors.grey,
         ),
       ),
-      child: Column(
-        children: [
-          _buildAssignmentCard(
-            title: "Assignment 1",
-            dueDate: "2024-04-15",
-          ),
-          Divider(),
-          _buildAssignmentCard(
-            title: "Assignment 2",
-            dueDate: "2024-04-20",
-          ),
-          Divider(),
-          _buildAssignmentCard(
-            title: "Assignment 3",
-            dueDate: "2024-04-25",
-          ),
-        ],
+      child: FutureBuilder(
+        future: course.getAssignments(),
+        builder:(context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Loading();
+          }
+
+          print(snapshot.data!);
+
+          return SizedBox(
+            height: 300.0,
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Assignment assignment = snapshot.data![index];
+
+                return _buildAssignmentCard(
+                  title: assignment.name,
+                  dueDate: DateFormat.MMMd().format(assignment.dueAt)
+                         + ", "
+                         + DateFormat.Hm().format(assignment.dueAt),
+                );
+              },
+            ),
+          );
+        }
       ),
     );
   }
@@ -215,16 +242,16 @@ class _CourseScreenState extends State<CourseScreen> {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.blueGrey,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
-                    "Due: $dueDate",
-                    style: TextStyle(
+                    "Due $dueDate",
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),
@@ -242,35 +269,35 @@ class _CourseScreenState extends State<CourseScreen> {
     return Column(
       children: [
         _buildMaterialLink(
-          icon: Icon(Icons.assignment),
+          icon: const Icon(Icons.assignment),
           title: "Syllabus",
           onTap: () {
             // Navigate to syllabus page
           },
         ),
         _buildMaterialLink(
-          icon: Icon(Icons.folder),
+          icon: const Icon(Icons.folder),
           title: "Files",
           onTap: () {
             // Navigate to files page
           },
         ),
         _buildMaterialLink(
-          icon: Icon(Icons.chat),
+          icon: const Icon(Icons.chat),
           title: "Discussion",
           onTap: () {
             // Navigate to discussion page
           },
         ),
         _buildMaterialLink(
-          icon: Icon(Icons.grade),
+          icon: const Icon(Icons.grade),
           title: "Grades",
           onTap: () {
             // Navigate to grades page
           },
         ),
         _buildMaterialLink(
-          icon: Icon(Icons.people),
+          icon: const Icon(Icons.people),
           title: "Students",
           onTap: () {
             // Navigate to students page
@@ -289,7 +316,7 @@ class _CourseScreenState extends State<CourseScreen> {
       leading: icon,
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           color: Colors.blueGrey,
         ),

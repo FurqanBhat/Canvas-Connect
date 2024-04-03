@@ -6,13 +6,73 @@ import 'package:provider/provider.dart';
 
 import 'LoginModel.dart';
 
+class Announcement {
+  String title;
+  String message;
+  DateTime postedAt;
+
+  Announcement(this.title, this.message, this.postedAt);
+}
+
+class Assignment {
+  String name;
+  String description;
+  DateTime dueAt;
+
+  Assignment(this.name, this.description, this.dueAt);
+}
+
 class Course {
-  String uuid;
+  int id;
   String code;
   String name;
   Color color;
 
-  Course({required this.uuid, required this.code, required this.name, required this.color});
+  Course({required this.id, required this.code, required this.name, required this.color});
+
+  Future<List<Announcement>> getAnnouncements() async {
+    List<Announcement> announcements = [];
+    try {
+      final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}"));
+      final announcementData = jsonDecode(response.body);
+
+      for (final announcement in announcementData) {
+        announcements.add(
+          Announcement(
+            announcement["title"],
+            announcement["message"],
+            DateTime.parse(announcement["posted_at"])
+          )
+        );
+      }
+    } catch (e) {
+      print("Failed to get announcements: "+ e.toString());
+    }
+
+    return announcements;
+  }
+
+  Future<List<Assignment>> getAssignments() async {
+    List<Assignment> assignments = [];
+    try {
+      final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses/${id}/assignments?access_token=${LoginModel.token}"));
+      final assignmentData = jsonDecode(response.body);
+
+      for (final assignment in assignmentData) {
+        assignments.add(
+          Assignment(
+            assignment["name"],
+            assignment["description"],
+            DateTime.parse(assignment["due_at"])
+          )
+        );
+      }
+    } catch (e) {
+      print("Failed to get assignments: "+ e.toString());
+    }
+
+    return assignments;
+  }
 }
 
 class CoursesModel{
@@ -31,9 +91,6 @@ class CoursesModel{
         courseData=jsonDecode(response.body);
         setCourses();
         setCoursesName();
-
-        print(courseData);
-        print(coursesName);
       }
       catch(e){
         print(e.toString() +"my error");
@@ -71,7 +128,7 @@ class CoursesModel{
       } else {
         courses.add(
           Course (
-            uuid: course["uuid"],
+            id: course["id"],
             code: course["course_code"],
             name: course["name"],
             /* TODO: Get user-defined color from Canvas when available */
