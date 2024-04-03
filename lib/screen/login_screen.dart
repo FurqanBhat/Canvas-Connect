@@ -33,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() async {
+    /* Dismiss on-screen keyboard */
+    FocusManager.instance.primaryFocus?.unfocus();
+
     setState(() {
       _loading = true;
     });
