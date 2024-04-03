@@ -21,7 +21,8 @@ class CourseScreenState extends State<CourseScreen> {
     Course course = CoursesModel.courses[widget.index];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: course.color,
+        foregroundColor: Colors.white,
         title: Text(
           course.code,
           style: const TextStyle(
@@ -43,18 +44,18 @@ class CourseScreenState extends State<CourseScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildSectionTitle("Announcements"),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 8.0),
             _buildAnnouncementsList(),
-            _buildViewAllButton(onPressed: () {
-              // Route to announcements
-            }),
+            // _buildViewAllButton(onPressed: () {
+            //   // Route to announcements
+            // }),
             const SizedBox(height: 16.0),
             _buildSectionTitle("Assignments"),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 8.0),
             _buildAssignmentsCalendar(),
             const SizedBox(height: 16.0),
-            _buildMaterialSectionTitle("Course Materials"),
-            const SizedBox(height: 12.0),
+            _buildSectionTitle("Course Materials"),
+            const SizedBox(height: 8.0),
             _buildMaterialLinks(),
           ],
         ),
@@ -62,7 +63,7 @@ class CourseScreenState extends State<CourseScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.blueGrey,
+        selectedItemColor: course.color,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
@@ -99,50 +100,30 @@ class CourseScreenState extends State<CourseScreen> {
         title,
         style: const TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.blueGrey,
+          // fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  Widget _buildMaterialSectionTitle(String title) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      color: Colors.blueGrey,
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildViewAllButton({required VoidCallback onPressed}) {
-    return TextButton(
-      onPressed: onPressed,
-      child: const Text(
-        "View all",
-        style: TextStyle(
-          color: Colors.blueGrey,
-        ),
-      ),
-    );
-  }
+  /* TODO: Add separate announcement section */
+  // Widget _buildViewAllButton({required VoidCallback onPressed}) {
+  //   return TextButton(
+  //     onPressed: onPressed,
+  //     child: const Text(
+  //       "View all",
+  //       style: TextStyle(
+  //         color: Colors.blueGrey,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildAnnouncementsList() {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          color: Colors.grey,
-        ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxHeight: 200.0
       ),
-      height: 200,
       child: FutureBuilder(
         future: course.getAnnouncements(),
         builder:(context, snapshot) {
@@ -152,33 +133,41 @@ class CourseScreenState extends State<CourseScreen> {
 
           print(snapshot.data!);
 
-          return SizedBox(
-            height: 300.0,
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Announcement announcement = snapshot.data![index];
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              Announcement announcement = snapshot.data![index];
 
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(
-                      child: Text(
+              return Card(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         announcement.title,
                         style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.blueGrey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        "Posted ${DateFormat.MMMd().format(announcement.postedAt)}, ${DateFormat.Hm().format(announcement.postedAt)}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
+                )
+              );
+            },
           );
         }
       ),
@@ -187,13 +176,6 @@ class CourseScreenState extends State<CourseScreen> {
 
   Widget _buildAssignmentsCalendar() {
     return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          color: Colors.grey,
-        ),
-      ),
       child: FutureBuilder(
         future: course.getAssignments(),
         builder:(context, snapshot) {
@@ -212,9 +194,7 @@ class CourseScreenState extends State<CourseScreen> {
 
                 return _buildAssignmentCard(
                   title: assignment.name,
-                  dueDate: DateFormat.MMMd().format(assignment.dueAt)
-                         + ", "
-                         + DateFormat.Hm().format(assignment.dueAt),
+                  dueDate: "${DateFormat.MMMd().format(assignment.dueAt)}, ${DateFormat.Hm().format(assignment.dueAt)}",
                 );
               },
             ),
@@ -227,7 +207,7 @@ class CourseScreenState extends State<CourseScreen> {
   Widget _buildAssignmentCard(
       {required String title, required String dueDate}) {
     return Card(
-      elevation: 0.0, // Set elevation to 0 to remove hovering effect
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -245,7 +225,6 @@ class CourseScreenState extends State<CourseScreen> {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -318,7 +297,6 @@ class CourseScreenState extends State<CourseScreen> {
         title,
         style: const TextStyle(
           fontSize: 16,
-          color: Colors.blueGrey,
         ),
       ),
       onTap: onTap,
