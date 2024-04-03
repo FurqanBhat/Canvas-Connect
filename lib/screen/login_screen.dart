@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text('Connect'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color(0xFF008CFF)),
+                                Theme.of(context).primaryColor),
                             foregroundColor:
                                 MaterialStateProperty.all<Color>(Colors.white),
                             padding:
