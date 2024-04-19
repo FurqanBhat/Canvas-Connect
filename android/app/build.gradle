@@ -65,3 +65,8 @@ flutter {
 }
 
 dependencies {}
+
+/* Fix build with flutter_background_service */
+configurations.implementation {
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}

@@ -30,10 +30,12 @@ class Course {
 
   Course({required this.id, required this.code, required this.name, required this.color});
 
-  Future<List<Announcement>> getAnnouncements() async {
+  Future<List<Announcement>> getAnnouncements({DateTime? since}) async {
     List<Announcement> announcements = [];
     try {
-      final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}"));
+      final response = await get(Uri.parse(
+        "https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since!.toIso8601String()}" : ""}"
+      ));
       final announcementData = jsonDecode(response.body);
 
       for (final announcement in announcementData) {
@@ -52,13 +54,18 @@ class Course {
     return announcements;
   }
 
-  Future<List<Assignment>> getAssignments() async {
+  Future<List<Assignment>> getAssignments({DateTime? since}) async {
     List<Assignment> assignments = [];
     try {
       final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses/${id}/assignments?access_token=${LoginModel.token}"));
       final assignmentData = jsonDecode(response.body);
 
       for (final assignment in assignmentData) {
+        /* Skip old assignments if since date is provided */
+        if (since != null && DateTime.parse(assignment["created_at"]).isBefore(since)) {
+          continue;
+        }
+
         assignments.add(
           Assignment(
             assignment["name"],
