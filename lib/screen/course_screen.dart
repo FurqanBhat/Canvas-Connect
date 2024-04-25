@@ -106,19 +106,6 @@ class CourseScreenState extends State<CourseScreen> {
     );
   }
 
-  /* TODO: Add separate announcement section */
-  // Widget _buildViewAllButton({required VoidCallback onPressed}) {
-  //   return TextButton(
-  //     onPressed: onPressed,
-  //     child: const Text(
-  //       "View all",
-  //       style: TextStyle(
-  //         color: Colors.blueGrey,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildAnnouncementsList() {
     return ConstrainedBox(
       constraints: const BoxConstraints(
