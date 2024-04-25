@@ -13,6 +13,17 @@ class Announcement {
 
   Announcement(this.title, this.message, this.postedAt);
 }
+class Grade {
+  String name;
+  double score;
+  double points_possible;
+  Grade({required this.name, required this.score, required this.points_possible});
+}
+class Discussion{
+  String title;
+  String html_description;
+  Discussion({required this.title, required this.html_description});
+}
 
 class Assignment {
   String name;
@@ -20,6 +31,12 @@ class Assignment {
   DateTime dueAt;
 
   Assignment(this.name, this.description, this.dueAt);
+}
+class File {
+  String name;
+  String fileId;
+  String fileVerifier;
+  File({required this.name, required this.fileId, required this.fileVerifier});
 }
 
 class Course {
@@ -30,21 +47,39 @@ class Course {
 
   Course({required this.id, required this.code, required this.name, required this.color});
 
-  Future<List<Announcement>> getAnnouncements({DateTime? since}) async {
+  Future<List<Discussion>> getDiscussions() async{
+    List<Discussion> discussions=[];
+    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/discussion_topics?per_page=50&access_token=${LoginModel.token}'));
+    if(response.statusCode==200){
+      try{
+        final discussionsData=jsonDecode(response.body);
+        for(final discussion in discussionsData) {
+          discussions.add(
+              Discussion(title: discussion['title'],
+                  html_description: discussion['message'])
+          );
+        }
+      }catch(e){
+        print(e.toString());
+      }
+    }else{
+      print("error in results_model, error code: ${response.statusCode}");
+    }
+    return discussions;
+  }
+  Future<List<Announcement>> getAnnouncements() async {
     List<Announcement> announcements = [];
     try {
-      final response = await get(Uri.parse(
-        "https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since!.toIso8601String()}" : ""}"
-      ));
+      final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}"));
       final announcementData = jsonDecode(response.body);
 
       for (final announcement in announcementData) {
         announcements.add(
-          Announcement(
-            announcement["title"],
-            announcement["message"],
-            DateTime.parse(announcement["posted_at"])
-          )
+            Announcement(
+                announcement["title"],
+                announcement["message"],
+                DateTime.parse(announcement["posted_at"])
+            )
         );
       }
     } catch (e) {
@@ -53,25 +88,46 @@ class Course {
 
     return announcements;
   }
+  Future<List<File>> fetchFiles() async{
+    List<File> files=[];
+    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/files?per_page=50&sort=created_at&access_token=${LoginModel.token}'));
+    if(response.statusCode==200){
+      try{
+        final filesData=jsonDecode(response.body);
+        for(final file in filesData){
+          files.add(
+              File(
+                  name: file['display_name'],
+                  fileId: file['id'],
+                  fileVerifier: file['uuid']
+              )
+          );
 
-  Future<List<Assignment>> getAssignments({DateTime? since}) async {
+        }
+      }
+      catch (e){
+        print(e.toString());
+      }
+    }
+    else{
+      print("Errror in flies_model : ${response.statusCode}");
+    }
+    return files;
+  }
+
+  Future<List<Assignment>> getAssignments() async {
     List<Assignment> assignments = [];
     try {
       final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses/${id}/assignments?access_token=${LoginModel.token}"));
       final assignmentData = jsonDecode(response.body);
 
       for (final assignment in assignmentData) {
-        /* Skip old assignments if since date is provided */
-        if (since != null && DateTime.parse(assignment["created_at"]).isBefore(since)) {
-          continue;
-        }
-
         assignments.add(
-          Assignment(
-            assignment["name"],
-            assignment["description"],
-            DateTime.parse(assignment["due_at"])
-          )
+            Assignment(
+                assignment["name"],
+                assignment["description"],
+                DateTime.parse(assignment["due_at"])
+            )
         );
       }
     } catch (e) {
@@ -80,7 +136,31 @@ class Course {
 
     return assignments;
   }
+  Future<List<Grade>> getGrades() async{
+    List<Grade> grades=[];
+    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/students/submissions?per_page=50&order=graded_at&order_direction=descending&include[]=assignment&include[]=total_scores&access_token=${LoginModel.token}'));
+    if(response.statusCode==200){
+      try{
+        final GradesData=jsonDecode(response.body);
+        for(final grade in GradesData){
+          grades.add(
+              Grade(
+                  name: grade["assignment"]["name"],
+                  score: grade["assignment"]["score"] ?? 0,
+                  points_possible: grade['assignment']['points_possible'] ?? 100
+              )
+          );
+        }
+      }catch(e){
+        print(e.toString());
+      }
+    }else{
+      print("error in results_model, error code: ${response.statusCode}");
+    }
+    return grades;
+  }
 }
+
 
 class CoursesModel{
   static bool requestSuccess=false;
@@ -134,13 +214,13 @@ class CoursesModel{
         temp.remove(course);
       } else {
         courses.add(
-          Course (
-            id: course["id"],
-            code: course["course_code"],
-            name: course["name"],
-            /* TODO: Get user-defined color from Canvas when available */
-            color: Colors.primaries[Random().nextInt(Colors.primaries.length)]
-          )
+            Course (
+                id: course["id"],
+                code: course["course_code"],
+                name: course["name"],
+                /* TODO: Get user-defined color from Canvas when available */
+                color: Colors.primaries[Random().nextInt(Colors.primaries.length)]
+            )
         );
       }
     }
