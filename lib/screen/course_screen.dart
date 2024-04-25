@@ -1,3 +1,6 @@
+import 'package:canvas_connect/screen/announcements.dart';
+import 'package:canvas_connect/screen/assignments.dart';
+import 'package:canvas_connect/screen/grade.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
@@ -43,18 +46,18 @@ class CourseScreenState extends State<CourseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSectionTitle("Announcements"),
+            _buildSectionTitle("Announcements", true, "Announcements"),
             const SizedBox(height: 8.0),
             _buildAnnouncementsList(),
             // _buildViewAllButton(onPressed: () {
             //   // Route to announcements
             // }),
             const SizedBox(height: 16.0),
-            _buildSectionTitle("Assignments"),
+            _buildSectionTitle("Assignments", true, 'Assignments'),
             const SizedBox(height: 8.0),
             _buildAssignmentsCalendar(),
             const SizedBox(height: 16.0),
-            _buildSectionTitle("Course Materials"),
+            _buildSectionTitle("Course Materials", false, ''),
             const SizedBox(height: 8.0),
             _buildMaterialLinks(),
           ],
@@ -93,18 +96,49 @@ class CourseScreenState extends State<CourseScreen> {
     });
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20,
-          // fontWeight: FontWeight.bold,
+  Widget _buildSectionTitle(String title, bool showIcon, String navigateTo) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              // fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-      ),
+        showIcon? IconButton(
+          icon: Icon(Icons.open_in_new),
+          onPressed: (){
+            switch(navigateTo){
+              case "Assignments": Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Assignments(course: course)));
+                break;
+              case "Announcements" : Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Announcements(course: course)));
+                break;
+              default: (){};
+            }
+          },
+
+        ): Container(),
+      ],
     );
   }
+
+  /* TODO: Add separate announcement section */
+  // Widget _buildViewAllButton({required VoidCallback onPressed}) {
+  //   return TextButton(
+  //     onPressed: onPressed,
+  //     child: const Text(
+  //       "View all",
+  //       style: TextStyle(
+  //         color: Colors.blueGrey,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildAnnouncementsList() {
     return ConstrainedBox(
@@ -112,7 +146,7 @@ class CourseScreenState extends State<CourseScreen> {
         maxHeight: 200.0
       ),
       child: FutureBuilder(
-        future: course.getAnnouncements(),
+        future: course.getAnnouncements(since: DateTime.now()),
         builder:(context, snapshot) {
           if (!snapshot.hasData) {
             return const Loading();
@@ -259,7 +293,7 @@ class CourseScreenState extends State<CourseScreen> {
           icon: const Icon(Icons.grade),
           title: "Grades",
           onTap: () {
-            // Navigate to grades page
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Grades(course: course)));
           },
         ),
         _buildMaterialLink(

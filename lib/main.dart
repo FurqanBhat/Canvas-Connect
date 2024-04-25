@@ -61,7 +61,7 @@ void onStart(ServiceInstance service) async {
         }
 
         /* Announcements */
-        for (Assignment assignment in await course.getAssignments(since: lastUpdated)) {
+        for (Assignment assignment in await course.getAssignments()) {
           NotificationManager.showNotification(
             NotificationData(
               course.name, "New assignment created: ${assignment.name}"

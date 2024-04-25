@@ -67,7 +67,7 @@ class Course {
     }
     return discussions;
   }
-  Future<List<Announcement>> getAnnouncements() async {
+  Future<List<Announcement>> getAnnouncements({required DateTime since}) async {
     List<Announcement> announcements = [];
     try {
       final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}"));
