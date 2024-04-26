@@ -146,7 +146,10 @@ class Course {
             Assignment(
                 assignment["name"],
                 assignment["description"],
-                DateTime.parse(assignment["due_at"])
+                assignment["due_at"] != null ?
+                  DateTime.parse(assignment["due_at"]) :
+                  // TODO: make due field nullable
+                  DateTime.now()
             )
         );
       }
