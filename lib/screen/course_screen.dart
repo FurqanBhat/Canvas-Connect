@@ -16,12 +16,12 @@ class CourseScreen extends StatefulWidget {
 }
 
 class CourseScreenState extends State<CourseScreen> {
-  late Course course = CoursesModel.courses[widget.index];
+  late Course course = CoursesModel.activeCourses[widget.index];
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    Course course = CoursesModel.courses[widget.index];
+    Course course = CoursesModel.activeCourses[widget.index];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: course.color,

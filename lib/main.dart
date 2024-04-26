@@ -50,7 +50,7 @@ void onStart(ServiceInstance service) async {
        * Create a notification for every announcement and assignment created within
        * the checking interval
        */
-      for (Course course in CoursesModel.courses) {
+      for (Course course in CoursesModel.activeCourses) {
         /* Announcements */
         for (Announcement announcement in await course.getAnnouncements(since: lastUpdated)) {
           NotificationManager.showNotification(

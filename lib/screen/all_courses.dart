@@ -1,60 +1,24 @@
-import 'package:canvas_connect/models/LoginModel.dart';
-import 'package:canvas_connect/resource/theme.dart';
-import 'package:canvas_connect/screen/all_courses.dart';
-import 'package:canvas_connect/screen/course_screen.dart';
-import 'package:canvas_connect/screen/login_screen.dart';
-import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:canvas_connect/models/CoursesModel.dart';
+import 'package:canvas_connect/screen/course_screen.dart';
+class AllCourses extends StatelessWidget {
+  const AllCourses({super.key});
 
-class CourseList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         appBar: AppBar(
-          title: const Text("Courses"),
+          title: const Text("All Courses"),
+          leading: IconButton(icon: Icon(Icons.arrow_back,),
+          onPressed: (){
+            Navigator.of(context).pop();
+          },
         ),
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade800,
-                ),
-                child: const Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Canvas-Connect",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                )),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Log out"),
-              onTap: () {
-                LoginModel.logOut();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const LoginScreen()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.file_copy_sharp),
-              title: const Text("All courses"),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AllCourses()));
-              },
-            )
-          ],
-        )),
+        ),
         body: ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: CoursesModel.activeCourses.length,
+          itemCount: CoursesModel.allCourses.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(4.0),
@@ -72,7 +36,7 @@ class CourseList extends StatelessWidget {
                             SizedBox(
                               width: 24.0,
                               child: Container(
-                                color: CoursesModel.activeCourses[index].color,
+                                color: CoursesModel.allCourses[index].color,
                               ),
                             ),
                             const SizedBox(width: 8.0),
@@ -82,12 +46,12 @@ class CourseList extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    CoursesModel.activeCourses[index].code,
+                                    CoursesModel.allCourses[index].code,
                                     style: const TextStyle(
                                         fontSize: 20.0,
                                         fontWeight: FontWeight.w200),
                                   ),
-                                  Text(CoursesModel.activeCourses[index].name,
+                                  Text(CoursesModel.allCourses[index].name,
                                       style: const TextStyle(
                                         fontSize: 10.0,
                                       )),
@@ -114,6 +78,8 @@ class CourseList extends StatelessWidget {
                   )),
             );
           },
-        ));
+        ),
+      ),
+    );
   }
 }

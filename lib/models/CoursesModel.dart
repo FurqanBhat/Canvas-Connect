@@ -165,10 +165,13 @@ class Course {
 class CoursesModel{
   static bool requestSuccess=false;
   static Map<String, String> coursesName={};
+  static Map<String, String> allcoursesName={};
   static List<dynamic> courseData=[];
   static List<dynamic> allCourseData=[];
 
-  static List<Course> courses = [];
+  static List<Course> activeCourses = [];
+  static List<Course> allCourses=[];
+
 
   static Future<void> fetchCourses() async{
     final response= await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses?per_page=50&access_token=${LoginModel.token}"));
@@ -197,10 +200,10 @@ class CoursesModel{
     int currYear=now.year;
 
     /* Remove any courses left from previous logins */
-    courses = [];
+    activeCourses = [];
 
     List temp=[];
-    temp.addAll(courses);
+    temp.addAll(activeCourses);
     for(final course in courseData){
       allCourseData.add(course);
       String date_created=course["start_at"];
@@ -213,7 +216,7 @@ class CoursesModel{
       }else if((currYear-yearCreated)>1){
         temp.remove(course);
       } else {
-        courses.add(
+        activeCourses.add(
             Course (
                 id: course["id"],
                 code: course["course_code"],
@@ -223,6 +226,15 @@ class CoursesModel{
             )
         );
       }
+      allCourses.add(
+            Course (
+                id: course["id"],
+                code: course["course_code"],
+                name: course["name"],
+                /* TODO: Get user-defined color from Canvas when available */
+                color: Colors.primaries[Random().nextInt(Colors.primaries.length)]
+            )
+        );
     }
     courseData=temp;
   }
@@ -230,5 +242,9 @@ class CoursesModel{
     for(final course in courseData){
       coursesName["course_${course["id"]}"]=course["name"];
     }
+    for(final course in allCourseData){
+      coursesName["course_${course["id"]}"]=course["name"];
+    }
+
   }
 }
