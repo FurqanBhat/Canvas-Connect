@@ -10,8 +10,9 @@ class Announcement {
   String title;
   String message;
   DateTime postedAt;
+  bool read;
 
-  Announcement(this.title, this.message, this.postedAt);
+  Announcement(this.title, this.message, this.postedAt, this.read);
 }
 class Grade {
   String name;
@@ -87,7 +88,8 @@ class Course {
             Announcement(
                 announcement["title"],
                 announcement["message"],
-                DateTime.parse(announcement["posted_at"])
+                DateTime.parse(announcement["posted_at"]),
+                announcement["read_state"] == "read" ? true : false
             )
         );
       }
