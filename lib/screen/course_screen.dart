@@ -151,7 +151,7 @@ class CourseScreenState extends State<CourseScreen> {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 200.0),
       child: FutureBuilder(
-          future: course.getAnnouncements(since: DateTime.now()),
+          future: course.getAnnouncements(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Loading();

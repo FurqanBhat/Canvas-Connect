@@ -67,10 +67,19 @@ class Course {
     }
     return discussions;
   }
-  Future<List<Announcement>> getAnnouncements({required DateTime since}) async {
+
+  /* getAnnouncements - Get announcements for course
+   *
+   * since: Date to get announcements created since. Only announcements created after
+   *        this date will be returned.
+   */
+  Future<List<Announcement>> getAnnouncements({DateTime? since}) async {
     List<Announcement> announcements = [];
     try {
-      final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}"));
+      final response = await get(Uri.parse(
+        "https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since.toIso8601String()}" : ""}"
+      ));
+      print("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since.toIso8601String()}" : ""}");
       final announcementData = jsonDecode(response.body);
 
       for (final announcement in announcementData) {
@@ -88,7 +97,7 @@ class Course {
 
     return announcements;
   }
-  Future<List<File>> fetchFiles() async{
+  Future<List<File>> fetchFiles({DateTime? since}) async{
     List<File> files=[];
     final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/files?per_page=50&sort=created_at&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
@@ -115,13 +124,22 @@ class Course {
     return files;
   }
 
-  Future<List<Assignment>> getAssignments() async {
+  /* getAssignments - Get assignments for course
+   *
+   * since: Date to get assignments created since. Only assignments created after
+   *        this date will be returned.
+   */
+  Future<List<Assignment>> getAssignments({DateTime? since}) async {
     List<Assignment> assignments = [];
     try {
       final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses/${id}/assignments?access_token=${LoginModel.token}"));
       final assignmentData = jsonDecode(response.body);
 
       for (final assignment in assignmentData) {
+        /* Skip old assignments if since date is provided */
+        if (since != null && DateTime.parse(assignment["created_at"]).isBefore(since)) {
+          continue;
+        }
         assignments.add(
             Assignment(
                 assignment["name"],

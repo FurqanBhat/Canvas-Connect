@@ -30,7 +30,7 @@ class Announcements extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-          future: course.getAnnouncements(since: DateTime.now()),
+          future: course.getAnnouncements(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
