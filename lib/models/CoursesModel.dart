@@ -169,7 +169,7 @@ class Course {
           grades.add(
               Grade(
                   name: grade["assignment"]["name"],
-                  score: grade["assignment"]["score"] ?? 0,
+                  score: grade["score"] ?? 0,
                   points_possible: grade['assignment']['points_possible'] ?? 100
               )
           );
