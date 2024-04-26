@@ -15,7 +15,8 @@ import 'package:canvas_connect/screen/course_list.dart';
 import 'package:canvas_connect/shared/notification_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const int defaultUpdateInterval = 60 * 5; // 5 minutes
+// Short interval for testing
+const int defaultUpdateInterval = 10;
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
