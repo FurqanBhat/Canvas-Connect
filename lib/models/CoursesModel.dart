@@ -34,7 +34,7 @@ class Assignment {
 }
 class File {
   String name;
-  String fileId;
+  int fileId;
   String fileVerifier;
   File({required this.name, required this.fileId, required this.fileVerifier});
 }

@@ -92,20 +92,20 @@ class FileScreen extends StatelessWidget {
   }
 }
 
-class PdfViewerScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Implement your PDF viewer screen here
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('PDF Viewer'),
-      ),
-      body: Center(
-        child: Text(
-          'PDF Viewer Screen',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  }
-}
+// class PdfViewerScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     // Implement your PDF viewer screen here
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('PDF Viewer'),
+//       ),
+//       body: Center(
+//         child: Text(
+//           'PDF Viewer Screen',
+//           style: TextStyle(fontSize: 24),
+//         ),
+//       ),
+//     );
+//   }
+// }
