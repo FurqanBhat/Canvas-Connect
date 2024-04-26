@@ -185,7 +185,7 @@ class Course {
 class CoursesModel{
   static bool requestSuccess=false;
   static Map<String, String> coursesName={};
-  static Map<String, String> allcoursesName={};
+  static Map<String, String> allCoursesName={};
   static List<dynamic> courseData=[];
   static List<dynamic> allCourseData=[];
 
@@ -221,7 +221,6 @@ class CoursesModel{
 
     /* Remove any courses left from previous logins */
     activeCourses = [];
-
     List temp=[];
     temp.addAll(activeCourses);
     for(final course in courseData){
@@ -263,7 +262,7 @@ class CoursesModel{
       coursesName["course_${course["id"]}"]=course["name"];
     }
     for(final course in allCourseData){
-      coursesName["course_${course["id"]}"]=course["name"];
+      allCoursesName["course_${course["id"]}"]=course["name"];
     }
 
   }

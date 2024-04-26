@@ -32,6 +32,12 @@ class FileScreen extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_outlined),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: Text(
             "Files",
             style: TextStyle(

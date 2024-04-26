@@ -174,7 +174,7 @@ class CourseList extends StatelessWidget {
                         )),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => CourseScreen(index)));
+                          builder: (context) => CourseScreen(index: index, all_courses: false,)));
                     },
                   )),
             );

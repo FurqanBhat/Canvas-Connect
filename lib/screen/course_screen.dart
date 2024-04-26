@@ -9,20 +9,21 @@ import 'package:canvas_connect/shared/loading.dart';
 
 class CourseScreen extends StatefulWidget {
   final int index;
+  bool all_courses;
 
-  const CourseScreen(this.index, {super.key});
+   CourseScreen({super.key, required this.index, required this.all_courses});
 
   @override
   CourseScreenState createState() => CourseScreenState();
 }
 
 class CourseScreenState extends State<CourseScreen> {
-  late Course course = CoursesModel.activeCourses[widget.index];
+  late Course course = widget.all_courses? CoursesModel.allCourses[widget.index] : CoursesModel.activeCourses[widget.index];
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    Course course = CoursesModel.activeCourses[widget.index];
+    Course course = widget.all_courses? CoursesModel.allCourses[widget.index] : CoursesModel.activeCourses[widget.index];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: course.color,
