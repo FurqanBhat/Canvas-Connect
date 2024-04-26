@@ -99,16 +99,63 @@ class CourseList extends StatelessWidget {
                             const SizedBox(width: 8.0),
                             Row(children: [
                               /* Quick access buttons */
-                              IconButton(
-                                icon: const Icon(Icons.announcement),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Assignments(
-                                      course: CoursesModel.activeCourses[index]
-                                      )
-                                    )
-                                  );
-                                }
+                              Stack(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.announcement),
+                                    onPressed: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => Assignments(
+                                          course: CoursesModel.activeCourses[index]
+                                          )
+                                        )
+                                      );
+                                    }
+                                  ),
+                                  FutureBuilder(
+                                    future: CoursesModel.activeCourses[index].getAnnouncements(),
+                                    builder: (context, snapshot) {
+                                      /*
+                                       * TODO: find proper empty widget that doesn't shift things around
+                                       * when used
+                                       */
+                                      Widget empty = const Positioned(
+                                        right: 0.0,
+                                        top: 0.0,
+                                        child: Text(""),
+                                      );
+                                      if (!snapshot.hasData) {
+                                        return empty;
+                                      }
+
+                                      int unreadCount = 0;
+
+                                      /* Count unread announcements */
+                                      for (Announcement announcement in snapshot.data!) {
+                                        if (!announcement.read) {
+                                          ++unreadCount;
+                                        }
+                                      }
+
+                                      if (unreadCount == 0) {
+                                        return empty;
+                                      }
+
+                                      return Positioned(
+                                        right: 0.0,
+                                        top: 0.0,
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red
+                                          ),
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text("${unreadCount}"),
+                                        )
+                                      );
+                                    }
+                                  ),
+                                ]
                               ),
                               IconButton(
                                 icon: const Icon(Icons.assignment),
