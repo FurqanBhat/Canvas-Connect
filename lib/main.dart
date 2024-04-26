@@ -43,36 +43,28 @@ void onStart(ServiceInstance service) async {
   await CoursesModel.fetchCourses();
 
   /* Create timer to check for new events on a fixed interval */
-  Timer.periodic(
-    Duration(seconds: interval),
-    (timer) async {
-      /*
+  Timer.periodic(Duration(seconds: interval), (timer) async {
+    /*
        * Create a notification for every announcement and assignment created within
        * the checking interval
        */
-      for (Course course in CoursesModel.activeCourses) {
-        /* Announcements */
-        for (Announcement announcement in await course.getAnnouncements(since: lastUpdated)) {
-          NotificationManager.showNotification(
-            NotificationData(
-              course.name, announcement.title
-            )
-          );
-        }
-
-        /* Announcements */
-        for (Assignment assignment in await course.getAssignments()) {
-          NotificationManager.showNotification(
-            NotificationData(
-              course.name, "New assignment created: ${assignment.name}"
-            )
-          );
-        }
+    for (Course course in CoursesModel.activeCourses) {
+      /* Announcements */
+      for (Announcement announcement
+          in await course.getAnnouncements(since: lastUpdated)) {
+        NotificationManager.showNotification(
+            NotificationData(course.name, announcement.title));
       }
 
-      lastUpdated = DateTime.now();
+      /* Announcements */
+      for (Assignment assignment in await course.getAssignments()) {
+        NotificationManager.showNotification(NotificationData(
+            course.name, "New assignment created: ${assignment.name}"));
+      }
     }
-  );
+
+    lastUpdated = DateTime.now();
+  });
 }
 
 void main() {
@@ -82,16 +74,14 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      isForegroundMode: true,
-      autoStart: true,
-      autoStartOnBoot: true,
-      initialNotificationTitle: "Foreground service",
-      initialNotificationContent: "Fetching data periodically"
-    ),
-    iosConfiguration: IosConfiguration()
-  );
+      androidConfiguration: AndroidConfiguration(
+          onStart: onStart,
+          isForegroundMode: true,
+          autoStart: true,
+          autoStartOnBoot: true,
+          initialNotificationTitle: "Foreground service",
+          initialNotificationContent: "Fetching data periodically"),
+      iosConfiguration: IosConfiguration());
 
   runApp(const App());
 }
@@ -102,17 +92,17 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: themeData,
-      home: LoginScreen()
-    );
+        debugShowCheckedModeBanner: false,
+        theme: themeData,
+        home: LoginScreen());
   }
 }
-class MyHttpOverrides extends HttpOverrides{
-@override
-HttpClient createHttpClient(SecurityContext? context){
-  return super.createHttpClient(context)
-    ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
-}
-}
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}

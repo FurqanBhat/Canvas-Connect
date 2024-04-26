@@ -9,7 +9,6 @@ class Grades extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
@@ -27,79 +26,80 @@ class Grades extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: course.getGrades(),
-        builder: (context, snapshot) {
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              if (!snapshot.hasData) {
-                return const Loading();
-              }
-              Grade grade=snapshot.data![index];
-              final score = grade.score;
-              final maxScore = grade.points_possible;
-              final ratio = score / maxScore;
+          future: course.getGrades(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Loading();
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Grade grade = snapshot.data![index];
+                final score = grade.score;
+                final maxScore = grade.points_possible;
+                final ratio = score / maxScore;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Card(
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$score/$maxScore',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Card(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 16.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  grade.name,
+                            child: Center(
+                              child: Text(
+                                '$score/$maxScore',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 8.0),
-                              LinearProgressIndicator(
-                                value: ratio,
-                                backgroundColor: Colors.grey[300],
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 16.0),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  grade.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8.0),
+                                LinearProgressIndicator(
+                                  value: ratio,
+                                  backgroundColor: Colors.grey[300],
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.blueAccent),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        }
-      ),
+                );
+              },
+            );
+          }),
     );
   }
 }

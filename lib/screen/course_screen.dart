@@ -1,5 +1,6 @@
 import 'package:canvas_connect/screen/announcements.dart';
 import 'package:canvas_connect/screen/assignments.dart';
+import 'package:canvas_connect/screen/file.dart';
 import 'package:canvas_connect/screen/grade.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -110,19 +111,25 @@ class CourseScreenState extends State<CourseScreen> {
             ),
           ),
         ),
-        showIcon? IconButton(
-          icon: Icon(Icons.open_in_new),
-          onPressed: (){
-            switch(navigateTo){
-              case "Assignments": Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Assignments(course: course)));
-                break;
-              case "Announcements" : Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Announcements(course: course)));
-                break;
-              default: (){};
-            }
-          },
-
-        ): Container(),
+        showIcon
+            ? IconButton(
+                icon: Icon(Icons.open_in_new),
+                onPressed: () {
+                  switch (navigateTo) {
+                    case "Assignments":
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Assignments(course: course)));
+                      break;
+                    case "Announcements":
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Announcements(course: course)));
+                      break;
+                    default:
+                      () {};
+                  }
+                },
+              )
+            : Container(),
       ],
     );
   }
@@ -142,86 +149,82 @@ class CourseScreenState extends State<CourseScreen> {
 
   Widget _buildAnnouncementsList() {
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxHeight: 200.0
-      ),
+      constraints: const BoxConstraints(maxHeight: 200.0),
       child: FutureBuilder(
-        future: course.getAnnouncements(since: DateTime.now()),
-        builder:(context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Loading();
-          }
+          future: course.getAnnouncements(since: DateTime.now()),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Loading();
+            }
 
-          print(snapshot.data!);
+            print(snapshot.data!);
 
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              Announcement announcement = snapshot.data![index];
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Announcement announcement = snapshot.data![index];
 
-              return Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        announcement.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                return Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            announcement.title,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            "Posted ${DateFormat.MMMd().format(announcement.postedAt)}, ${DateFormat.Hm().format(announcement.postedAt)}",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        "Posted ${DateFormat.MMMd().format(announcement.postedAt)}, ${DateFormat.Hm().format(announcement.postedAt)}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              );
-            },
-          );
-        }
-      ),
+                    ));
+              },
+            );
+          }),
     );
   }
 
   Widget _buildAssignmentsCalendar() {
     return Container(
       child: FutureBuilder(
-        future: course.getAssignments(),
-        builder:(context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Loading();
-          }
+          future: course.getAssignments(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Loading();
+            }
 
-          print(snapshot.data!);
+            print(snapshot.data!);
 
-          return SizedBox(
-            height: 300.0,
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Assignment assignment = snapshot.data![index];
+            return SizedBox(
+              height: 300.0,
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  Assignment assignment = snapshot.data![index];
 
-                return _buildAssignmentCard(
-                  title: assignment.name,
-                  dueDate: "${DateFormat.MMMd().format(assignment.dueAt)}, ${DateFormat.Hm().format(assignment.dueAt)}",
-                );
-              },
-            ),
-          );
-        }
-      ),
+                  return _buildAssignmentCard(
+                    title: assignment.name,
+                    dueDate:
+                        "${DateFormat.MMMd().format(assignment.dueAt)}, ${DateFormat.Hm().format(assignment.dueAt)}",
+                  );
+                },
+              ),
+            );
+          }),
     );
   }
 
@@ -279,7 +282,8 @@ class CourseScreenState extends State<CourseScreen> {
           icon: const Icon(Icons.folder),
           title: "Files",
           onTap: () {
-            // Navigate to files page
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FileScreen(course: course)));
           },
         ),
         _buildMaterialLink(
@@ -293,7 +297,8 @@ class CourseScreenState extends State<CourseScreen> {
           icon: const Icon(Icons.grade),
           title: "Grades",
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Grades(course: course)));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Grades(course: course)));
           },
         ),
         _buildMaterialLink(
