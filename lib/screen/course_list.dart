@@ -1,6 +1,8 @@
 import 'package:canvas_connect/models/LoginModel.dart';
 import 'package:canvas_connect/resource/theme.dart';
 import 'package:canvas_connect/screen/all_courses.dart';
+import 'package:canvas_connect/screen/announcements.dart';
+import 'package:canvas_connect/screen/assignments.dart';
 import 'package:canvas_connect/screen/course_screen.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
@@ -98,11 +100,27 @@ class CourseList extends StatelessWidget {
                             Row(children: [
                               /* Quick access buttons */
                               IconButton(
-                                  icon: const Icon(Icons.announcement),
-                                  onPressed: () {}),
+                                icon: const Icon(Icons.announcement),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Assignments(
+                                      course: CoursesModel.activeCourses[index]
+                                      )
+                                    )
+                                  );
+                                }
+                              ),
                               IconButton(
-                                  icon: const Icon(Icons.check_box),
-                                  onPressed: () {}),
+                                icon: const Icon(Icons.assignment),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Announcements(
+                                      course: CoursesModel.activeCourses[index]
+                                      )
+                                    )
+                                  );
+                                }
+                              ),
                             ]),
                             const SizedBox(width: 8.0)
                           ],
