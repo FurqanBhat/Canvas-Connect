@@ -35,8 +35,8 @@ class Grades extends StatelessWidget {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 Grade grade = snapshot.data![index];
-                final score = grade.score;
-                final maxScore = grade.points_possible;
+                final score = grade.score.toInt();
+                final maxScore = grade.points_possible.toInt();
                 final ratio = score / maxScore;
 
                 return Padding(
@@ -64,7 +64,7 @@ class Grades extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
