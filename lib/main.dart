@@ -14,7 +14,6 @@ import 'package:canvas_connect/resource/theme.dart';
 import 'package:canvas_connect/screen/course_list.dart';
 import 'package:canvas_connect/shared/notification_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 // Short interval for testing
 const int defaultUpdateInterval = 10;
 
