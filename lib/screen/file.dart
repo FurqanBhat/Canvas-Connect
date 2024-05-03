@@ -1,4 +1,5 @@
 import 'package:canvas_connect/models/CoursesModel.dart';
+import 'package:canvas_connect/screen/file_viewer.dart';
 import 'package:canvas_connect/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -6,18 +7,6 @@ class FileScreen extends StatelessWidget {
   Course course;
   FileScreen({Key? key, required this.course}) : super(key: key);
 
-  // Function to open PDF viewer
-  // void openPDFViewer(BuildContext context, Map<String, dynamic> file) {
-  //   // Navigate to PDF viewer screen and pass file information
-  //   Navigator.of(context).pushNamed(
-  //     RouteManager.pdfViewer,
-  //     arguments: {
-  //       'id': file['id'],
-  //       'uuid': file['uuid'],
-  //       'display_name': file['display_name'],
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +47,9 @@ class FileScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   File file = snapshot.data![index];
                   return InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FilesViewer(id: file.fileId, fileVerifier: file.fileVerifier, fileName: file.name)));
+                    },
                     child: Card(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       elevation: 4,

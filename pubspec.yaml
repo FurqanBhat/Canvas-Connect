@@ -41,9 +41,9 @@ dependencies:
   pdf_viewer_plugin: ^2.0.1
   path_provider: ^2.1.1
   flutter_html: ^3.0.0-beta.2
-  intl: ^0.18.1
+  intl: ^0.19.0
   flutter_spinkit: ^5.2.1
-  connectivity_plus: ^5.0.1
+  connectivity_plus: ^6.0.3
   flutter_local_notifications: ^17.0.1
   flutter_background_service: '^5.0.5'
 
