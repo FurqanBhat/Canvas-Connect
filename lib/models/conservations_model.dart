@@ -35,7 +35,17 @@ class ConversationsModel{
       print("Error in conversations.dart : error code: "+response.statusCode.toString());
     }
     return fullMessage;
-
-
+  }
+  static Future<dynamic> searchUser(String user) async{
+    List<dynamic> users=[];
+    final response= await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/search/recipients?search=${user}&per_page=50&access_token=${LoginModel.token}"));
+    if(response.statusCode==200){
+      try{
+        users=jsonDecode(response.body);
+      }catch(e){
+        print("error in searchusers "+ e.toString());
+      }
+    }
+    return users;
   }
 }

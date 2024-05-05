@@ -1,4 +1,5 @@
 import 'package:canvas_connect/models/conservations_model.dart';
+import 'package:canvas_connect/screen/search_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../shared/loading.dart';
@@ -63,7 +64,7 @@ class Conversations extends StatelessWidget {
                   child: Text(snapshot.data![index]["participants"][0]["full_name"][0]),
                 ),
                 title: Text(
-                  snapshot.data![index]["subject"],
+                  snapshot.data![index]["subject"] ?? "No Subject",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -76,7 +77,10 @@ class Conversations extends StatelessWidget {
         }
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => (){} //_startChat(context),
+        onPressed: (){
+          print("entered");
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SearchScreen()));
+        } //_startChat(context),
         ,label: Text('Start Chat'),
         icon: Icon(Icons.chat),
         backgroundColor: Colors.blueAccent,
@@ -85,25 +89,6 @@ class Conversations extends StatelessWidget {
     );
   }
 
-  void _startChat(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var course in courses)
-            ListTile(
-              title: Text(course.name),
-              subtitle: Text(course.professor),
-              onTap: () {
-                Navigator.pop(context); // Close course selection bottom sheet
-                _showStudentsInCourse(context, course);
-              },
-            ),
-        ],
-      ),
-    );
-  }
 
   void _showStudentsInCourse(BuildContext context, MyCourse course) {
     final students = enrolledStudents[course.name] ?? [];
