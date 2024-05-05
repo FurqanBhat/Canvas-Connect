@@ -1,9 +1,11 @@
+import 'package:canvas_connect/models/conservations_model.dart';
 import 'package:flutter/material.dart';
+
+import '../shared/loading.dart';
 
 class Chat {
   final String sender;
   final String message;
-
   Chat({required this.sender, required this.message});
 }
 
@@ -47,28 +49,35 @@ class discussion extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: previousChats.length,
-        itemBuilder: (BuildContext context, int index) {
-          final chat = previousChats[index];
-          return ListTile(
-            leading: CircleAvatar(
-              child: Text(chat.sender[0]),
-            ),
-            title: Text(
-              chat.sender,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(chat.message),
-            onTap: () => _openChat(context, chat.sender),
+      body: FutureBuilder(
+        future: ConversationsModel.getConversations(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Loading();
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                leading: CircleAvatar(
+                  child: Text(snapshot.data![index]["participants"][0]["full_name"][0]),
+                ),
+                title: Text(
+                  snapshot.data![index]["subject"],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(snapshot.data![index]["last_message"]),
+                onTap: () => _openChat(context, snapshot.data![index]['id'], snapshot.data![index]["subject"]),
+              );
+            },
           );
-        },
+        }
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _startChat(context),
-        label: Text('Start Chat'),
+        onPressed: () => (){} //_startChat(context),
+        ,label: Text('Start Chat'),
         icon: Icon(Icons.chat),
         backgroundColor: Colors.blueAccent,
       ),
@@ -108,7 +117,7 @@ class discussion extends StatelessWidget {
               title: Text(student),
               onTap: () {
                 Navigator.pop(context); // Close student selection bottom sheet
-                _openChat(context, student);
+                _openChat(context, 676, "");
               },
             ),
         ],
@@ -116,10 +125,10 @@ class discussion extends StatelessWidget {
     );
   }
 
-  void _openChat(BuildContext context, String student) {
+  void _openChat(BuildContext context, int id, String subject) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ChatPage(student: student)),
+      MaterialPageRoute(builder: (context) => ChatPage(id: id,subject: subject,)),
     );
   }
 }
@@ -133,25 +142,43 @@ class MyCourse {
 }
 
 class ChatPage extends StatelessWidget {
-  final String student;
+  final int id;
+  final String subject;
 
-  const ChatPage({Key? key, required this.student}) : super(key: key);
+  const ChatPage({Key? key, required this.id, required this.subject}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(student),
+        title: Text(subject),
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              children: [
-                ChatMessage(message: 'Hey, how are you?', isSent: false),
-                ChatMessage(message: 'I am good, thanks!', isSent: true),
-                ChatMessage(message: 'Do you have the homework solutions?', isSent: true),
-              ],
+            child: FutureBuilder(
+              future: ConversationsModel.getFullMessage(id),
+              builder: (context, snapshot){
+                if(!snapshot.hasData){
+                  return Loading();
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!["messages"].length,
+                  itemBuilder: (context, index){
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                      child: Card(
+                        color: Colors.blueGrey[50],
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text(snapshot.data!["messages"].reversed.toList()[index]["body"])),
+                        elevation: 10,
+                      ),
+                    );
+                  },
+
+                );
+              },
             ),
           ),
           _buildInputField(),
