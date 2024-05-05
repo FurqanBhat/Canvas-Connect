@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:canvas_connect/shared/loading.dart';
+import 'package:canvas_connect/screen/discussion.dart';
 
 class CourseScreen extends StatefulWidget {
   final int index;
@@ -291,7 +292,9 @@ class CourseScreenState extends State<CourseScreen> {
           icon: const Icon(Icons.chat),
           title: "Discussion",
           onTap: () {
-            // Navigate to discussion page
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => discussion(),
+            ));
           },
         ),
         _buildMaterialLink(
