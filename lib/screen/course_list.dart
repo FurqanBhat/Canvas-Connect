@@ -4,7 +4,7 @@ import 'package:canvas_connect/screen/all_courses.dart';
 import 'package:canvas_connect/screen/announcements.dart';
 import 'package:canvas_connect/screen/assignments.dart';
 import 'package:canvas_connect/screen/course_screen.dart';
-import 'package:canvas_connect/screen/discussion.dart';
+import 'package:canvas_connect/screen/conversations.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +58,7 @@ class CourseList extends StatelessWidget {
               title: const Text("Messages"),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => discussion()));
+                    builder: (context) => Conversations()));
               },
             ),
           ],

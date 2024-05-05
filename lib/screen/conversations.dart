@@ -9,8 +9,8 @@ class Chat {
   Chat({required this.sender, required this.message});
 }
 
-class discussion extends StatelessWidget {
-  discussion({Key? key}) : super(key: key);
+class Conversations extends StatelessWidget {
+  Conversations({Key? key}) : super(key: key);
 
   final List<MyCourse> courses = [
     MyCourse(name: 'Strength', professor: 'Mithat Gokhan', id: null),
