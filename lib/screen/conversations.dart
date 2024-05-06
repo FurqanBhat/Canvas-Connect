@@ -5,14 +5,10 @@ import 'package:flutter/material.dart';
 import '../shared/loading.dart';
 import 'chat_details.dart';
 
-class Chat {
-  final String sender;
-  final String message;
-  Chat({required this.sender, required this.message});
-}
 
 class Conversations extends StatelessWidget {
-  Conversations({Key? key}) : super(key: key);
+  final bool isSent;
+  Conversations({Key? key, required this.isSent}) : super(key: key);
 
 
   @override
@@ -30,7 +26,7 @@ class Conversations extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: ConversationsModel.getConversations(),
+        future: ConversationsModel.getConversations(isSent),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Loading();
@@ -48,7 +44,7 @@ class Conversations extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: Text(snapshot.data![index]["last_message"]),
+                subtitle: Text(snapshot.data![index]["last_authored_message"] ?? "") ,
                 onTap: () => _openChat(context, snapshot.data![index]['id'], snapshot.data![index]["subject"]),
               );
             },

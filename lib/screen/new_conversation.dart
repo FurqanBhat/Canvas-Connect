@@ -1,4 +1,5 @@
 import 'package:canvas_connect/models/conservations_model.dart';
+import 'package:canvas_connect/shared/loading.dart';
 import 'package:flutter/material.dart';
 class NewConversation extends StatefulWidget {
   final String name;
@@ -9,12 +10,13 @@ class NewConversation extends StatefulWidget {
 }
 
 class _NewConversationState extends State<NewConversation> {
+  bool isLoading=false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _subjectController = TextEditingController();
   TextEditingController _bodyController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return isLoading ? Loading() : MaterialApp(
       title: widget.name,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -70,12 +72,14 @@ class _NewConversationState extends State<NewConversation> {
                     ),
                     onPressed: () async{
                       if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isLoading=true;
+                        });
                         // Process the form data
                         String subject = _subjectController.text;
                         String body = _bodyController.text;
                         // You can do anything with the data here, like sending it to an API
                         await ConversationsModel.createConversation(widget.userId, subject, body);
-
                         // Clear the text fields
                         _subjectController.clear();
                         _bodyController.clear();
