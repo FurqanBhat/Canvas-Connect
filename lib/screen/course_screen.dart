@@ -66,30 +66,30 @@ class CourseScreenState extends State<CourseScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: course.color,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'To Do',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: 'Files',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grade),
-            label: 'Grades',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   selectedItemColor: course.color,
+      //   unselectedItemColor: Colors.grey,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.assignment),
+      //       label: 'To Do',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.folder),
+      //       label: 'Files',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.grade),
+      //       label: 'Grades',
+      //     ),
+      //   ],
+      // ),
     );
   }
 
@@ -114,8 +114,14 @@ class CourseScreenState extends State<CourseScreen> {
           ),
         ),
         showIcon
-            ? IconButton(
-                icon: Icon(Icons.open_in_new),
+            ? TextButton(
+                child: const Text("Show All",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Customize the color to your preference
+                  ),
+                ),
                 onPressed: () {
                   switch (navigateTo) {
                     case "Assignments":

@@ -13,7 +13,7 @@ class Announcements extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent, // Purple color for app bar
+        backgroundColor: course.color, // Purple color for app bar
         title: Text(
           "Announcements",
           style: TextStyle(

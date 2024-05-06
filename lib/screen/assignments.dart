@@ -13,7 +13,7 @@ class Assignments extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Color(0xFF0074CC), // CANVAS LMS primary color
+        primaryColor: course.color,
         hintColor: Color(0xFFFFC500), // CANVAS LMS hint color
         scaffoldBackgroundColor: Colors.white,
       ),
