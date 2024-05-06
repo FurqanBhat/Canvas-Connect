@@ -6,6 +6,7 @@ import 'package:canvas_connect/screen/assignments.dart';
 import 'package:canvas_connect/screen/course_screen.dart';
 import 'package:canvas_connect/screen/conversations.dart';
 import 'package:canvas_connect/screen/login_screen.dart';
+import 'package:canvas_connect/screen/settings.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -59,6 +60,14 @@ class CourseList extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => Conversations()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Settings()));
               },
             ),
           ],
