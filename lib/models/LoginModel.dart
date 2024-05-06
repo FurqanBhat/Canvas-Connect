@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:canvas_connect/shared/service.dart';
+
 class LoginModel {
   static String _token = "";
   static String get token => _token;
@@ -15,6 +17,9 @@ class LoginModel {
 
   static loginstart() async {
     await _loadLoginData();
+
+    /* Start notification service */
+    notificationService.startService();
   }
 
   static _loadLoginData() async {

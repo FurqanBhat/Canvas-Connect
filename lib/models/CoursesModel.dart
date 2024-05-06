@@ -128,20 +128,47 @@ class Course {
 
   /* getAssignments - Get assignments for course
    *
-   * since: Date to get assignments created since. Only assignments created after
-   *        this date will be returned.
+   * since:       Date to get assignments created since. Only assignments created after
+   *              this date will be returned.
+   * dueBefore:   Date to get assignments due before. Assignments due after this date
+   *              will be excluded.
+   * dueAfter:    Date to get assignments due after. Assignments due before this date
+   *              will be excluded.
    */
-  Future<List<Assignment>> getAssignments({DateTime? since}) async {
+  Future<List<Assignment>> getAssignments({
+    DateTime? since,
+    DateTime? dueBefore,
+    DateTime? dueAfter
+  }) async {
     List<Assignment> assignments = [];
     try {
       final response = await get(Uri.parse("https://${LoginModel.domain}/api/v1/courses/${id}/assignments?access_token=${LoginModel.token}"));
       final assignmentData = jsonDecode(response.body);
 
       for (final assignment in assignmentData) {
+        DateTime? dueAt = assignment["due_at"] != null ?
+                          DateTime.parse(assignment["due_at"]) :
+                          null;
+
         /* Skip old assignments if since date is provided */
         if (since != null && DateTime.parse(assignment["created_at"]).isBefore(since)) {
           continue;
         }
+
+        /* Filter based on due date */
+        if (dueAt == null && (dueBefore != null || dueAfter != null)) {
+          /* Ignore assignments without a due date if due date filtering criteria is provided */
+          continue;
+        }
+
+        if (dueBefore != null && dueAt!.isAfter(dueBefore)) {
+          continue;
+        }
+
+        if (dueAfter != null && dueAt!.isBefore(dueAfter)) {
+          continue;
+        }
+
         assignments.add(
             Assignment(
                 assignment["name"],
