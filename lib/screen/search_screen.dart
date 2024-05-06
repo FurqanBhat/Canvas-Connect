@@ -1,4 +1,7 @@
 import 'package:canvas_connect/models/conservations_model.dart';
+import 'package:canvas_connect/screen/chat_details.dart';
+import 'package:canvas_connect/screen/new_conversation.dart';
+import 'package:canvas_connect/screen/single_conversation.dart';
 import 'package:flutter/material.dart';
 
 import '../shared/loading.dart';
@@ -66,7 +69,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
                     ),
                     // const TextStyle(color: foreGroundColor, fontWeight: FontWeight.bold),),
-                    onTap: () {}
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SingleConversation(name: snapshot.data![index]['full_name'], id: snapshot.data![index]['id'])));
+                    }
                 );
               },
             );

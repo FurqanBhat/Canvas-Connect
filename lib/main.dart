@@ -7,7 +7,6 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-
 import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:canvas_connect/models/LoginModel.dart';
 import 'package:canvas_connect/resource/theme.dart';
