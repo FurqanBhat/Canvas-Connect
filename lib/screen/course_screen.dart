@@ -291,11 +291,7 @@ class CourseScreenState extends State<CourseScreen> {
         _buildMaterialLink(
           icon: const Icon(Icons.chat),
           title: "Discussion",
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Conversations(),
-            ));
-          },
+          onTap: (){}
         ),
         _buildMaterialLink(
           icon: const Icon(Icons.grade),

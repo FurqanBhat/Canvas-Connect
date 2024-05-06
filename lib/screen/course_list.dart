@@ -56,10 +56,18 @@ class CourseList extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.message_outlined),
-              title: const Text("Messages"),
+              title: const Text("Inbox"),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Conversations()));
+                    builder: (context) => Conversations(isSent: false)));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.message_outlined),
+              title: const Text("Outbox"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Conversations(isSent: true)));
               },
             ),
             ListTile(

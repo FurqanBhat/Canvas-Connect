@@ -71,7 +71,7 @@ class _SingleConversationState extends State<SingleConversation> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Text(snapshot.data![index]["last_message"]),
+                      subtitle: Text(snapshot.data![index]["last_authored_message"] ?? ""),
                       onTap: () => _openChat(context, snapshot.data![index]['id'], snapshot.data![index]["subject"]),
                     );
                   },
@@ -85,34 +85,34 @@ class _SingleConversationState extends State<SingleConversation> {
     );
   }
 
-  Widget _buildInputField() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Type your message...',
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () async{
-              await ConversationsModel.createConversation(widget.id, widget.name, _controller.text);
-              _controller.clear();
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildInputField() {
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(horizontal: 8.0),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[200],
+  //       borderRadius: BorderRadius.circular(20.0),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           child: TextField(
+  //             controller: _controller,
+  //             decoration: InputDecoration.collapsed(
+  //               hintText: 'Type your message...',
+  //             ),
+  //           ),
+  //         ),
+  //         IconButton(
+  //           icon: Icon(Icons.send),
+  //           onPressed: () async{
+  //             await ConversationsModel.createConversation(widget.id, widget.name, _controller.text);
+  //             _controller.clear();
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   void _openChat(BuildContext context, int id, String subject) {
     Navigator.push(
       context,

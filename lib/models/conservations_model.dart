@@ -6,38 +6,36 @@ import 'package:http/http.dart';
 import 'LoginModel.dart';
 
 class ConversationsModel{
-  static Future<dynamic> addMessage(int id, String message) async{
-    List<dynamic> sent_message=[];
-    final response= await post(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations/10803/add_message?body=${message}&access_token=${LoginModel.token}"));
+  static Future<void> addMessage(int id, String message) async{
+    final response= await post(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations/${id}/add_message?body=${message}&access_token=${LoginModel.token}"));
     if(response.statusCode==200){
-      try{
-        sent_message=jsonDecode(response.body);
-      }catch(e){
-        print("eroor in addmessage "+e.toString());
-      }
-    }
-    return sent_message;
+      print("success");
+    };
   }
 
   static Future<dynamic> getSingleConversation(int id) async{
-    List<dynamic> conversation=[];
-    final response=await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=sent&scope=inbox&filter=user_${id}&filter_mode=or&per_page=50&access_token=${LoginModel.token}"));
-    if(response.statusCode==200){
+    List<dynamic> conversation1=[];
+    List<dynamic> conversation2=[];
+    final response1= await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=inbox&filter=user_${id}&filter_mode=or&per_page=50&access_token=${LoginModel.token}"));
+    final response2= await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=sent&filter=user_${id}&filter_mode=or&per_page=50&access_token=${LoginModel.token}"));
+    if(response1.statusCode==200 && response2.statusCode==200){
       try{
-        conversation=jsonDecode(response.body);
+        conversation1=jsonDecode(response1.body);
+        conversation2=jsonDecode(response2.body);
+        conversation1.addAll(conversation2);
       }
       catch(e){
         print(e.toString());
       }
     }else{
-      print("Error in getsingleconversations : error code: "+response.statusCode.toString());
+      print("Error in getsingleconversations : error code: "+response1.statusCode.toString());
     }
-    return conversation;
+    return conversation2;
   }
 
-  static Future<List<dynamic>> getConversations() async{
+  static Future<List<dynamic>> getConversations(bool isSent) async{
     List<dynamic> conversations=[];
-    final response=await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=sent&scope=inbox&filter_mode=or&per_page=50&access_token=${LoginModel.token}"));
+    final response= isSent ? await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=sent&filter_mode=or&per_page=50&access_token=${LoginModel.token}"))  :  await get(Uri.parse("https://canvas.agu.edu.tr/api/v1/conversations?scope=inbox&filter_mode=or&per_page=50&access_token=${LoginModel.token}"));
     if(response.statusCode==200){
       try{
         conversations=jsonDecode(response.body);
