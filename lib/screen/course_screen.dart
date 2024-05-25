@@ -3,6 +3,7 @@ import 'package:canvas_connect/screen/assignments.dart';
 import 'package:canvas_connect/screen/discussions_screen.dart';
 import 'package:canvas_connect/screen/file.dart';
 import 'package:canvas_connect/screen/grade.dart';
+import 'package:canvas_connect/screen/modules_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
@@ -281,13 +282,6 @@ class CourseScreenState extends State<CourseScreen> {
     return Column(
       children: [
         _buildMaterialLink(
-          icon: const Icon(Icons.assignment),
-          title: "Syllabus",
-          onTap: () {
-            // Navigate to syllabus page
-          },
-        ),
-        _buildMaterialLink(
           icon: const Icon(Icons.folder),
           title: "Files",
           onTap: () {
@@ -313,9 +307,9 @@ class CourseScreenState extends State<CourseScreen> {
         ),
         _buildMaterialLink(
           icon: const Icon(Icons.people),
-          title: "Students",
+          title: "Modules",
           onTap: () {
-            // Navigate to students page
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ModulesListScreen(course: course)));
           },
         ),
       ],

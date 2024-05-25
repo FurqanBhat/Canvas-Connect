@@ -26,6 +26,12 @@ class Discussion{
   String html_description;
   Discussion({required this.title, required this.html_description});
 }
+class Module{
+  String name;
+  String itemUrl;
+  int id;
+  Module(this.name, this.itemUrl, this.id);
+}
 
 class Assignment {
   String name;
@@ -39,6 +45,20 @@ class File {
   int fileId;
   String fileVerifier;
   File({required this.name, required this.fileId, required this.fileVerifier});
+}
+class ModuleItem{
+  final String title;
+  final String type;
+  final String? htmlUrl;
+  final String? url;
+  final String? externalUrl;
+  ModuleItem({
+    required this.title,
+    required this.type,
+    this.htmlUrl,
+    this.url,
+    this.externalUrl,
+  });
 }
 
 class Course {
@@ -68,6 +88,26 @@ class Course {
       print("error in results_model, error code: ${response.statusCode}");
     }
     return discussions;
+  }
+
+
+  Future<List<ModuleItem>> getModulesDetails(int moduleId) async{
+    List<ModuleItem> moduleItems=[];
+    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/modules/${moduleId}/items?per_page=50&access_token=${LoginModel.token}'));
+    if(response.statusCode==200){
+      try{
+        final moduleItemsData=jsonDecode(response.body);
+        for(final moduleItem in moduleItemsData) {
+          moduleItems.add(
+              ModuleItem(title: moduleItem["title"],  type: moduleItem["type"], htmlUrl: moduleItem["htmlUrl"], url: moduleItem["url"], externalUrl: moduleItem["externalUrl"]));
+        }
+      }catch(e){
+        print(e.toString());
+      }
+    }else{
+      print("error in results_model, error code: ${response.statusCode}");
+    }
+    return moduleItems;
   }
 
   /* getAnnouncements - Get announcements for course
@@ -100,6 +140,28 @@ class Course {
 
     return announcements;
   }
+
+  Future<List<Module>> getModules() async{
+    List<Module> modulesList=[];
+    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/modules?per_page=50&access_token=${LoginModel.token}'));
+    if(response.statusCode==200){
+      try{
+        final modulesListData=jsonDecode(response.body);
+        for(final module in modulesListData){
+          print(module.toString());
+          modulesList.add(
+              Module(module["name"], module["items_url"], module["id"])
+          );
+        }
+      }catch(e){
+        print(e.toString());
+      }
+    }else{
+      print("error in getModules, error code: ${response.statusCode}");
+    }
+    return modulesList;
+  }
+  
   Future<List<File>> fetchFiles({DateTime? since}) async{
     List<File> files=[];
     final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/files?per_page=50&sort=created_at&access_token=${LoginModel.token}'));
