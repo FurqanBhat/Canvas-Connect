@@ -1,5 +1,6 @@
 import 'package:canvas_connect/screen/announcements.dart';
 import 'package:canvas_connect/screen/assignments.dart';
+import 'package:canvas_connect/screen/discussions_screen.dart';
 import 'package:canvas_connect/screen/file.dart';
 import 'package:canvas_connect/screen/grade.dart';
 import 'package:intl/intl.dart';
@@ -297,7 +298,10 @@ class CourseScreenState extends State<CourseScreen> {
         _buildMaterialLink(
           icon: const Icon(Icons.chat),
           title: "Discussion",
-          onTap: (){}
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => DiscussionsPage(course: course)));
+          }
         ),
         _buildMaterialLink(
           icon: const Icon(Icons.grade),

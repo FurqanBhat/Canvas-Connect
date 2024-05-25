@@ -14,6 +14,7 @@ class Announcement {
 
   Announcement(this.title, this.message, this.postedAt, this.read);
 }
+
 class Grade {
   String name;
   double score;
