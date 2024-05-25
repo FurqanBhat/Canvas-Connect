@@ -7,7 +7,6 @@ class ModuleDetailsPage extends StatelessWidget {
   final Course course;
 
   final int id;
-
   const ModuleDetailsPage({super.key, required this.course, required this.id});
 
   @override
