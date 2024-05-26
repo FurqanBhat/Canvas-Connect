@@ -368,7 +368,7 @@ class CourseScreenState extends State<CourseScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        "${location.roomCode}${location.roomName != null ? " (${location.roomName})" : ""}",
+                                        location.roomCode,
                                         style: const TextStyle(
                                           fontSize: 18.0,
                                           fontFamily: "monospace"
@@ -376,12 +376,13 @@ class CourseScreenState extends State<CourseScreen> {
                                       ),
                                     ),
                                     Text(
-                                      location.buildingName,
+                                      "${location.buildingName}${location.roomName != null ? "\n${location.roomName}" : ""}",
                                       style: const TextStyle(
                                         fontSize: 16.0,
                                         fontStyle: FontStyle.italic,
                                         fontWeight: FontWeight.w100
                                       ),
+                                      textAlign: TextAlign.end,
                                     )
                                   ]
                                 );
