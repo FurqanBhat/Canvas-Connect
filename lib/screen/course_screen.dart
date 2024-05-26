@@ -2,9 +2,11 @@ import 'package:canvas_connect/screen/announcements.dart';
 import 'package:canvas_connect/screen/assignments.dart';
 import 'package:canvas_connect/screen/file.dart';
 import 'package:canvas_connect/screen/grade.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
+import 'package:canvas_connect/shared/database_manager.dart';
 import 'package:canvas_connect/shared/loading.dart';
 import 'package:canvas_connect/screen/conversations.dart';
 
@@ -59,6 +61,10 @@ class CourseScreenState extends State<CourseScreen> {
             _buildSectionTitle("Assignments", true, 'Assignments'),
             const SizedBox(height: 8.0),
             _buildAssignmentsCalendar(),
+            const SizedBox(height: 16.0),
+            _buildSectionTitle("Exams", false, ''),
+            const SizedBox(height: 4.0),
+            _buildExamList(),
             const SizedBox(height: 16.0),
             _buildSectionTitle("Course Materials", false, ''),
             const SizedBox(height: 8.0),
@@ -273,6 +279,124 @@ class CourseScreenState extends State<CourseScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildExamList() {
+    if (!DatabaseManager.connected) {
+      return const Center(
+        child: Text(
+          "Not connected to database",
+          style: TextStyle(
+            fontSize: 18.0,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w100,
+            color: Colors.grey
+          ),
+        )
+      );
+    }
+
+    return FutureBuilder(
+      future: DatabaseManager.getExams(course.code),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Loading();
+        }
+
+        if (snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text(
+              "No exams scheduled",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w100,
+                color: Colors.grey
+              ),
+            ),
+          );
+        }
+
+        return Column(
+          children: List<Widget>.generate(
+            snapshot.data!.length,
+            (index) {
+              Exam exam = snapshot.data![index];
+
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              toBeginningOfSentenceCase(exam.type),
+                              style: const TextStyle(
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "${DateFormat.MMMMEEEEd().format(exam.datetime)} ${DateFormat.jm().format(exam.datetime)}",
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                            )
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4.0),
+                      FutureBuilder(
+                        future: DatabaseManager.getExamLocations(exam.id),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Loading();
+                          }
+
+                          return Column(
+                            children: List<Widget>.generate(
+                              snapshot.data!.length,
+                              (index) {
+                                Location location = snapshot.data![index];
+
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "${location.roomCode}${location.roomName != null ? " (${location.roomName})" : ""}",
+                                        style: const TextStyle(
+                                          fontSize: 18.0,
+                                          fontFamily: "monospace"
+                                        )
+                                      ),
+                                    ),
+                                    Text(
+                                      location.buildingName,
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontStyle: FontStyle.italic,
+                                        fontWeight: FontWeight.w100
+                                      ),
+                                    )
+                                  ]
+                                );
+                              }
+                            ),
+                          );
+                        }
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          ),
+        );
+      }
     );
   }
 
