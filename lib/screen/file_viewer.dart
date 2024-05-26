@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:open_file/open_file.dart';
 
@@ -75,18 +76,36 @@ class PdfViewer extends StatelessWidget {
 
   PdfViewer({required this.filePath, required this.fileName, required this.url});
 
+
   Future<void> downloadFile(BuildContext context) async {
     try {
+      // Check for storage permission
+      var status = await Permission.storage.request();
+      if (!status.isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Storage permission is required to download the file.'),
+          ),
+        );
+        return;
+      }
+
+      // Fetch the file from the URL
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        final directory = await getApplicationDocumentsDirectory();
-        final filePath = '${directory.path}/$fileName';
+        // Get the external storage directory
+        final directory = await getExternalStorageDirectory();
+        final filePath = '${directory!.path}/$fileName';
+
+        // Write the file to the path
         final file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
         print('File saved to $filePath');
+
+        // Show a snackbar with a button to open the file
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Download complete'),
+            content: Text('Download complete. File saved to $filePath'),
             action: SnackBarAction(
               label: 'Open',
               onPressed: () {
@@ -97,9 +116,19 @@ class PdfViewer extends StatelessWidget {
         );
       } else {
         print('Failed to download file: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to download file: ${response.statusCode}'),
+          ),
+        );
       }
     } catch (e) {
       print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
     }
   }
 
@@ -111,19 +140,12 @@ class PdfViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_outlined),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Center(
         child: _buildFileViewer(filePath, context),
       ),
     );
   }
+
 
   Widget _buildFileViewer(String filePath, BuildContext context) {
     if (filePath.endsWith('.pdf')) {
