@@ -18,6 +18,17 @@ class Location
   Location(this.roomCode, this.roomName, this.buildingName);
 }
 
+class Session
+{
+  int courseId;
+  int dayOfWeek;
+  DateTime startTime;
+  DateTime endTime;
+  Location? location;
+
+  Session(this.courseId, this.dayOfWeek, this.startTime, this.endTime, this.location);
+}
+
 class DatabaseManager
 {
   static MySQLConnection? _connection;
@@ -94,5 +105,49 @@ class DatabaseManager
     }
 
     return locations;
+  }
+
+  static Future<List<Session>> getSessions({List<int>? courseIds, int? dayOfWeek}) async
+  {
+    List<Session> sessions = [];
+
+    if (_connection == null || !_connection!.connected) {
+      throw Exception("Not connected");
+    }
+
+    var result = await _connection!.execute(
+      """
+      select course_id, day_of_week, start_time, end_time,
+        room.code as room_code, room.name as room_name,
+        building.name as building_name from session
+      inner join room on room_id = room.id
+      inner join building on building_id = building.id
+      where ${courseIds != null ? "course_id in $courseIds"
+              .replaceAll("[", "(").replaceAll("]", ")") : "true"}
+      and ${dayOfWeek != null ? "day_of_week = $dayOfWeek" : "true"}
+      order by start_time;
+      """
+    );
+
+    for (var row in result.rows) {
+      var values = row.assoc();
+
+      sessions.add(
+        Session(
+          int.parse(values["course_id"]!),
+          int.parse(values["day_of_week"]!),
+          /* Date is unused. Pass it to make DateTime.parse() work */
+          DateTime.parse("1970-01-01 ${values["start_time"]!}"),
+          DateTime.parse("1970-01-01 ${values["end_time"]!}"),
+          Location(
+            values["room_code"]!,
+            values["room_name"],
+            values["building_name"]!
+          )
+        )
+      );
+    }
+
+    return sessions;
   }
 }
