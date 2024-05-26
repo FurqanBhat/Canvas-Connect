@@ -161,7 +161,7 @@ class Schedule extends StatelessWidget
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
+        child: DatabaseManager.connected ? Column(
           children: List<Widget>.generate(
             7,
             (index) {
@@ -173,6 +173,17 @@ class Schedule extends StatelessWidget
               return constructDaySchedule(index, false, courseIds);
             }
           )
+        ) :
+        const Center(
+          child: Text(
+            "Not connected to database",
+            style: TextStyle(
+              fontSize: 18.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w100,
+              color: Colors.grey
+            ),
+          ),
         )
       )
     );
