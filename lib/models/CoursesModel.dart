@@ -80,7 +80,6 @@ class Course {
       final response = await get(Uri.parse(
         "https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since.toIso8601String()}" : ""}"
       ));
-      print("https://${LoginModel.domain}/api/v1/announcements?context_codes[]=course_${id}&access_token=${LoginModel.token}${since != null ? "&start_date=${since.toIso8601String()}" : ""}");
       final announcementData = jsonDecode(response.body);
 
       for (final announcement in announcementData) {
