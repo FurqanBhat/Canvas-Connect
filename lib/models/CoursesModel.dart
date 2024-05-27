@@ -34,11 +34,12 @@ class Module{
 }
 
 class Assignment {
+  int id;
   String name;
   String description;
   DateTime dueAt;
 
-  Assignment(this.name, this.description, this.dueAt);
+  Assignment(this.id, this.name, this.description, this.dueAt);
 }
 class File {
   String name;
@@ -234,6 +235,7 @@ class Course {
 
         assignments.add(
             Assignment(
+                assignment["id"],
                 assignment["name"],
                 assignment["description"],
                 assignment["due_at"] != null ?
