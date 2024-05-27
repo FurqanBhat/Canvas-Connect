@@ -427,11 +427,11 @@ class CourseScreenState extends State<CourseScreen> {
         7,
         (index) {
           if (index == 0) {
-            return constructDaySchedule(DateTime.now().weekday, true, [course.id]);
+            return constructDaySchedule(DateTime.now().weekday, true, [course.id], false);
           }
 
           /* Construct schedules for all days */
-          return constructDaySchedule(index, false, [course.id]);
+          return constructDaySchedule(index, false, [course.id], false);
         }
       )
     );

@@ -5,7 +5,7 @@ import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:canvas_connect/shared/database_manager.dart';
 import 'package:canvas_connect/shared/loading.dart';
 
-Widget constructDaySchedule(int weekday, bool today, List<int> courseIds)
+Widget constructDaySchedule(int weekday, bool today, List<int> courseIds, bool showTitle)
 {
   return Column(
   crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +56,20 @@ Widget constructDaySchedule(int weekday, bool today, List<int> courseIds)
                 }
               }
 
+              Text timeText = Text(
+                "${DateFormat.jm().format(session.startTime)} - ${DateFormat.jm().format(session.endTime)}",
+                style: const TextStyle(
+                  fontSize: 14.0,
+                )
+              );
+
               return Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      showTitle ? Row(
                         children: [
                           Expanded(
                             child: Column(
@@ -84,14 +91,9 @@ Widget constructDaySchedule(int weekday, bool today, List<int> courseIds)
                               ],
                             ),
                           ),
-                          Text(
-                            "${DateFormat.jm().format(session.startTime)} - ${DateFormat.jm().format(session.endTime)}",
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                            )
-                          ),
+                          timeText
                         ],
-                      ),
+                      ) : Center(child: timeText),
                       if (session.location != null) const SizedBox(height: 4.0),
                       if (session.location != null) Row(
                         children: [
@@ -166,11 +168,11 @@ class Schedule extends StatelessWidget
             7,
             (index) {
               if (index == 0) {
-                return constructDaySchedule(DateTime.now().weekday, true, courseIds);
+                return constructDaySchedule(DateTime.now().weekday, true, courseIds, true);
               }
 
               /* Construct schedules for all days */
-              return constructDaySchedule(index, false, courseIds);
+              return constructDaySchedule(index, false, courseIds, true);
             }
           )
         ) :
