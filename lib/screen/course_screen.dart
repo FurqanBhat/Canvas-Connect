@@ -10,6 +10,7 @@ import 'package:canvas_connect/models/CoursesModel.dart';
 import 'package:canvas_connect/shared/database_manager.dart';
 import 'package:canvas_connect/shared/loading.dart';
 import 'package:canvas_connect/screen/conversations.dart';
+import 'package:canvas_connect/screen/schedule.dart';
 
 class CourseScreen extends StatefulWidget {
   final int index;
@@ -62,6 +63,10 @@ class CourseScreenState extends State<CourseScreen> {
             _buildSectionTitle("Assignments", true, 'Assignments'),
             const SizedBox(height: 8.0),
             _buildAssignmentsCalendar(),
+            const SizedBox(height: 16.0),
+            _buildSectionTitle("Schedule", false, ''),
+            const SizedBox(height: 4.0),
+            _buildSchedule(),
             const SizedBox(height: 16.0),
             _buildSectionTitle("Exams", false, ''),
             const SizedBox(height: 4.0),
@@ -399,6 +404,36 @@ class CourseScreenState extends State<CourseScreen> {
           ),
         );
       }
+    );
+  }
+
+  Widget _buildSchedule() {
+    if (!DatabaseManager.connected) {
+      return const Center(
+        child: Text(
+          "Not connected to database",
+          style: TextStyle(
+            fontSize: 18.0,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w100,
+            color: Colors.grey
+          ),
+        )
+      );
+    }
+
+    return Column(
+      children: List<Widget>.generate(
+        7,
+        (index) {
+          if (index == 0) {
+            return constructDaySchedule(DateTime.now().weekday, true, [course.id]);
+          }
+
+          /* Construct schedules for all days */
+          return constructDaySchedule(index, false, [course.id]);
+        }
+      )
     );
   }
 
