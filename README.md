@@ -1,6 +1,6 @@
 # Canvas-Connect
 
-Canvas-Connect is an alternative mobile application for Canvas LMS designed to work seamlessly for university students. This application provides a streamlined and user-friendly interface for managing courses, assignments, grades, and more.
+Canvas-Connect is an alternative mobile application for Canvas LMS designed to work seamlessly for university students. This application provides a streamlined and user-friendly interface for managing courses, assignments, grades,sending messages and more.
 
 ## Features
 
@@ -9,8 +9,6 @@ Canvas-Connect is an alternative mobile application for Canvas LMS designed to w
 - **Grades**: Check your grades and track your academic progress.
 - **Notifications**: Stay updated with push notifications for important course events.
 - **Discussion Boards**: Participate in class discussions and collaborate with peers.
-## Screenshots
-
 
 ## Installation
 
