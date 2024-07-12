@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:open_file/open_file.dart';
 
+import '../models/LoginModel.dart';
+
 class FilesViewer extends StatefulWidget {
   final int id;
   final String fileVerifier, fileName;
@@ -35,7 +37,7 @@ class _FilesViewerState extends State<FilesViewer> {
   }
 
   Future<String?> downloadAndSavePDF() async {
-    String url = "https://canvas.agu.edu.tr/files/${widget.id}/download?download_frd=1&verifier=${widget.fileVerifier}";
+    String url = "https://${LoginModel.domain}/files/${widget.id}/download?download_frd=1&verifier=${widget.fileVerifier}";
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -62,7 +64,7 @@ class _FilesViewerState extends State<FilesViewer> {
       ),
       body: SafeArea(
         child: (pdfFilePath != null)
-            ? PdfViewer(filePath: pdfFilePath!, fileName: widget.fileName, url: "https://canvas.agu.edu.tr/files/${widget.id}/download?download_frd=1&verifier=${widget.fileVerifier}")
+            ? PdfViewer(filePath: pdfFilePath!, fileName: widget.fileName, url: "https://${LoginModel.domain}/files/${widget.id}/download?download_frd=1&verifier=${widget.fileVerifier}")
             : Center(child: CircularProgressIndicator()),
       ),
     );
