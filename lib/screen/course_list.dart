@@ -140,7 +140,7 @@ class CourseList extends StatelessWidget {
                                     icon: const Icon(Icons.announcement),
                                     onPressed: () {
                                       Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (context) => Assignments(
+                                        builder: (context) => Announcements(
                                           course: CoursesModel.activeCourses[index]
                                           )
                                         )

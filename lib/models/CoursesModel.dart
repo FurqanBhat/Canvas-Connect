@@ -72,7 +72,7 @@ class Course {
 
   Future<List<Discussion>> getDiscussions() async{
     List<Discussion> discussions=[];
-    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/discussion_topics?per_page=50&access_token=${LoginModel.token}'));
+    final response=await get(Uri.parse('https://${LoginModel.domain}/api/v1/courses/${id}/discussion_topics?per_page=50&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
       try{
         final discussionsData=jsonDecode(response.body);
@@ -94,7 +94,7 @@ class Course {
 
   Future<List<ModuleItem>> getModulesDetails(int moduleId) async{
     List<ModuleItem> moduleItems=[];
-    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/modules/${moduleId}/items?per_page=50&access_token=${LoginModel.token}'));
+    final response=await get(Uri.parse('https://${LoginModel.domain}/api/v1/courses/${id}/modules/${moduleId}/items?per_page=50&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
       try{
         final moduleItemsData=jsonDecode(response.body);
@@ -143,7 +143,7 @@ class Course {
 
   Future<List<Module>> getModules() async{
     List<Module> modulesList=[];
-    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/modules?per_page=50&access_token=${LoginModel.token}'));
+    final response=await get(Uri.parse('https://${LoginModel.domain}/api/v1/courses/${id}/modules?per_page=50&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
       try{
         final modulesListData=jsonDecode(response.body);
@@ -164,7 +164,7 @@ class Course {
   
   Future<List<File>> fetchFiles({DateTime? since}) async{
     List<File> files=[];
-    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/files?per_page=50&sort=created_at&access_token=${LoginModel.token}'));
+    final response=await get(Uri.parse('https://${LoginModel.domain}/api/v1/courses/${id}/files?per_page=50&sort=created_at&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
       try{
         final filesData=jsonDecode(response.body);
@@ -252,7 +252,7 @@ class Course {
   }
   Future<List<Grade>> getGrades() async{
     List<Grade> grades=[];
-    final response=await get(Uri.parse('https://canvas.agu.edu.tr/api/v1/courses/${id}/students/submissions?per_page=50&order=graded_at&order_direction=descending&include[]=assignment&include[]=total_scores&access_token=${LoginModel.token}'));
+    final response=await get(Uri.parse('https://${LoginModel.domain}/api/v1/courses/${id}/students/submissions?per_page=50&order=graded_at&order_direction=descending&include[]=assignment&include[]=total_scores&access_token=${LoginModel.token}'));
     if(response.statusCode==200){
       try{
         final GradesData=jsonDecode(response.body);

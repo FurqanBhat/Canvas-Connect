@@ -43,7 +43,7 @@ class Help extends StatelessWidget {
                 SizedBox(height: 30,),
                 Divider(color: Colors.black, thickness: 5,),
                 SizedBox(height: 10,),
-                Text("Note: \nYour data is stored locally on your device, ensuring privacy. \nThe app solely relies on the Canvas LMS API, guaranteeing data security.", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.greenAccent),),
+                Text("Note: \nYour data is stored locally on your device, ensuring privacy. \nThe app solely relies on the Canvas LMS API, guaranteeing data security. Skip the database domain part as of now.", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.greenAccent),),
                 SizedBox(height: 20,)
               ],
 

@@ -41,7 +41,7 @@ class _AssignmentDetailState extends State<AssignmentDetail> {
       // Implement file upload logic
       final fileUrl = await _uploadFile();
       final url =
-          'https://canvas.agu.edu.tr/api/v1/courses/${widget.courseId}/assignments/${widget.assignmentId}/submissions?submission[submission_type]=online_upload&submission[file_ids][]=$fileUrl&access_token=${LoginModel.token}';
+          'https://${LoginModel.domain}/api/v1/courses/${widget.courseId}/assignments/${widget.assignmentId}/submissions?submission[submission_type]=online_upload&submission[file_ids][]=$fileUrl&access_token=${LoginModel.token}';
       print(url);
       final response = await http.post(Uri.parse(url));
       print(response.statusCode);
@@ -73,7 +73,7 @@ class _AssignmentDetailState extends State<AssignmentDetail> {
 
   Future<int> _uploadFile() async {
     final createUploadUrl =
-        'https://canvas.agu.edu.tr/api/v1/courses/${widget.courseId}/assignments/${widget.assignmentId}/submissions/self/files?name=${_pickedFile?.path?.split('/').last}&access_token=${LoginModel.token}';
+        'https://${LoginModel.domain}/api/v1/courses/${widget.courseId}/assignments/${widget.assignmentId}/submissions/self/files?name=${_pickedFile?.path?.split('/').last}&access_token=${LoginModel.token}';
 
     try {
       final response = await http.post(Uri.parse(createUploadUrl));

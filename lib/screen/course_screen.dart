@@ -78,30 +78,6 @@ class CourseScreenState extends State<CourseScreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      //   selectedItemColor: course.color,
-      //   unselectedItemColor: Colors.grey,
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.assignment),
-      //       label: 'To Do',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.folder),
-      //       label: 'Files',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.grade),
-      //       label: 'Grades',
-      //     ),
-      //   ],
-      // ),
     );
   }
 
@@ -154,18 +130,6 @@ class CourseScreenState extends State<CourseScreen> {
     );
   }
 
-  /* TODO: Add separate announcement section */
-  // Widget _buildViewAllButton({required VoidCallback onPressed}) {
-  //   return TextButton(
-  //     onPressed: onPressed,
-  //     child: const Text(
-  //       "View all",
-  //       style: TextStyle(
-  //         color: Colors.blueGrey,
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildAnnouncementsList() {
     return ConstrainedBox(
