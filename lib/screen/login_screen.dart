@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -23,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _checkData();
     _domainController = TextEditingController();
     _tokenController = TextEditingController();
     _databaseDomainController = TextEditingController();
@@ -35,19 +35,34 @@ class _LoginScreenState extends State<LoginScreen> {
     _databaseDomainController.dispose();
     super.dispose();
   }
+  void _checkData() async{
+    setState(() {
+      _loading=true;
+    });
+    await LoginModel.loadLoginData();
+    setState(() {
+      _loading=false;
+    });
+    if(LoginModel.loginSuccessful){
+      _handleLogin();
+    }
+
+  }
+
+  void _connect() async{
+    LoginModel.setData(_tokenController.text, _domainController.text, _databaseDomainController.text);
+    _handleLogin();
+  }
 
   void _handleLogin() async {
     /* Dismiss on-screen keyboard */
     FocusManager.instance.primaryFocus?.unfocus();
-
     setState(() {
       _loading = true;
     });
 
     try {
-      LoginModel.setData(_tokenController.text, _domainController.text, _databaseDomainController.text);
       await CoursesModel.fetchCourses();
-
       if (!CoursesModel.requestSuccess) {
         _showSnackBar("Invalid token");
         throw Exception();
@@ -176,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: _handleLogin,
+                          onPressed: _connect,
                           child: Text('Connect'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:canvas_connect/screen/login_screen.dart';
+import 'package:canvas_connect/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:canvas_connect/models/CoursesModel.dart';
@@ -32,7 +33,6 @@ void main() {
 class App extends StatelessWidget {
   const App({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,

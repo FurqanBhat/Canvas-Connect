@@ -16,17 +16,17 @@ class LoginModel {
   static bool get loginSuccessful => _loginSuccessful;
 
   LoginModel() {
-    _loadLoginData();
+    loadLoginData();
   }
 
   static loginstart() async {
-    await _loadLoginData();
+    await loadLoginData();
 
     /* Start notification service */
     notificationService.startService();
   }
 
-  static _loadLoginData() async {
+  static loadLoginData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     _token = preferences.getString("token") ?? "";
