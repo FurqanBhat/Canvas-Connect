@@ -8,7 +8,7 @@ Canvas-Connect is an alternative mobile application for Canvas LMS designed to w
 - **Assignments**: View and submit assignments with ease.
 - **Grades**: Check your grades and track your academic progress.
 - **Notifications**: Stay updated with push notifications for important course events.
-- **Discussion Boards**: Participate in class discussions and collaborate with peers.
+- **View/download files**: Download and view files published by your instructor.
 
 ## Installation
 
@@ -16,7 +16,7 @@ To install UniCanvas Pro on your Android device, follow these steps:
 
 1. Download the latest APK file from the [Releases](https://github.com/furqanbhat/canvas-connect/releases) page.
 2. Open the APK file on your device and follow the installation instructions.
-3. Once installed, you can use help from the help button with the apk to login.
+3. Once installed, you can use help from the help button within the apk to login.
 
 ## License
 
